@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD 기획안 양식 — 미래에셋증권 AI 실무 교육</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, 'Pretendard', sans-serif;
+    background: #fafafa;
+    color: #222;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .header {
+    text-align: center;
+    padding: 60px 24px 40px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    font-size: 14px;
+    color: #888;
+  }
+
+  .cards {
+    display: flex;
+    gap: 24px;
+    padding: 0 24px 60px;
+    max-width: 960px;
+    width: 100%;
+  }
+
+  .card {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    border-color: #999;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  .card-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: #aaa;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 20px;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .tag {
+    font-size: 11px;
+    color: #888;
+    background: #f5f5f5;
+    border: 1px solid #eee;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  .card-btn {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    background: #222;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .card-btn:hover {
+    background: #444;
+  }
+
+  .footer {
+    padding: 24px;
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+    border-top: 1px solid #eee;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  @media (max-width: 720px) {
+    .cards {
+      flex-direction: column;
+    }
+
+    .header {
+      padding: 40px 24px 24px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>PRD 기획안 양식</h1>
+  <p>미래에셋증권 AI 실무 교육 — 작성할 양식을 선택하세요</p>
+</div>
+
+<div class="cards">
+
+  <div class="card">
+    <div class="card-num">TEMPLATE 01</div>
+    <div class="card-title">1-Page Summary</div>
+    <div class="card-desc">
+      핵심만 담은 PRD 한 장 요약본.<br>
+      제품 개요, 문제 정의, 핵심 기능, AS-IS/TO-BE, 성공 지표를 한 페이지에 정리합니다.
+    </div>
+    <div class="card-tags">
+      <span class="tag">8개 섹션</span>
+      <span class="tag">A4 1장</span>
+      <span class="tag">빠른 작성</span>
+    </div>
+    <a href="templates/1_onepage.html" class="card-btn">작성하기</a>
+  </div>
+
+  <div class="card">
+    <div class="card-num">TEMPLATE 02</div>
+    <div class="card-title">상세 기획안</div>
+    <div class="card-desc">
+      풀 스펙 PRD 상세 기획서.<br>
+      페르소나, 유저 저니, 기능 상세(I/P/O), 화면 설계, 기술 구조, 비기능 요구사항까지 포함합니다.
+    </div>
+    <div class="card-tags">
+      <span class="tag">13개 섹션</span>
+      <span class="tag">SMART 목표</span>
+      <span class="tag">와이어프레임</span>
+    </div>
+    <a href="templates/2_detailed.html" class="card-btn">작성하기</a>
+  </div>
+
+  <div class="card">
+    <div class="card-num">TEMPLATE 03</div>
+    <div class="card-title">피드백 양식</div>
+    <div class="card-desc">
+      기획안 리뷰 & 피드백 시트.<br>
+      8개 항목 정량 평가(5점 척도), 자동 등급 산출, 정성 평가, 실행 판정(GO/NO-GO)을 작성합니다.
+    </div>
+    <div class="card-tags">
+      <span class="tag">5점 척도</span>
+      <span class="tag">자동 등급</span>
+      <span class="tag">액션 아이템</span>
+    </div>
+    <a href="templates/3_feedback.html" class="card-btn">작성하기</a>
+  </div>
+
+</div>
+
+<div class="footer">
+  미래에셋증권 AI 실무 교육 &middot; Confidential
+</div>
+
+</body>
+</html>

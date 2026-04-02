@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD 상세 기획안</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    background: #f0f0f0;
+    color: #222;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  /* 목차 사이드바 */
+  .toc {
+    position: fixed;
+    left: 0; top: 0;
+    width: 220px;
+    height: 100vh;
+    background: #fff;
+    border-right: 1px solid #e0e0e0;
+    overflow-y: auto;
+    padding: 20px 0;
+    font-size: 11px;
+    z-index: 100;
+  }
+
+  .toc-title {
+    padding: 0 16px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 8px;
+    color: #222;
+  }
+
+  .toc a {
+    display: block;
+    padding: 5px 16px;
+    color: #666;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+
+  .toc a:hover, .toc a.active {
+    color: #222;
+    background: #f5f5f5;
+    border-left-color: #222;
+  }
+
+  .toc .num {
+    display: inline-block;
+    width: 24px;
+    color: #aaa;
+  }
+
+  /* 메인 */
+  .main {
+    margin-left: 220px;
+    padding: 0 0 100px;
+  }
+
+  /* 표지 */
+  .cover {
+    background: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .cover .doc-type {
+    font-size: 12px;
+    color: #888;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .cover h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .cover .project-name {
+    font-size: 16px;
+    color: #aaa;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+  }
+
+  .cover-meta {
+    font-size: 12px;
+    color: #666;
+    line-height: 2;
+  }
+
+  .cover-meta span { color: #aaa; margin-right: 4px; }
+
+  /* 섹션 컨테이너 */
+  .section-wrap {
+    background: #fff;
+    margin: 0;
+    padding: 48px 60px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .section-header {
+    font-size: 16px;
+    font-weight: 700;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #222;
+    margin-bottom: 20px;
+  }
+
+  .section-header .num {
+    color: #aaa;
+    margin-right: 8px;
+    font-weight: 400;
+  }
+
+  .sub-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 20px 0 8px;
+    color: #333;
+  }
+
+  .sub-title:first-child { margin-top: 0; }
+
+  .desc {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  /* 입력 필드 */
+  input[type="text"], textarea, select {
+    font-family: inherit;
+    font-size: 11px;
+    color: #222;
+    border: 1px solid #ddd;
+    padding: 6px 8px;
+    background: #fafafa;
+    outline: none;
+    width: 100%;
+    resize: vertical;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: #888;
+    background: #fff;
+  }
+
+  textarea { min-height: 40px; line-height: 1.6; }
+  textarea.tall { min-height: 60px; }
+  textarea.xtall { min-height: 100px; }
+
+  /* 테이블 */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+    text-align: left;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    font-size: 10px;
+    color: #444;
+  }
+
+  td {
+    padding: 4px 6px;
+    border: 1px solid #ddd;
+    vertical-align: top;
+  }
+
+  td input, td textarea, td select {
+    border: none;
+    background: transparent;
+    padding: 2px 0;
+  }
+
+  td input:focus, td textarea:focus { background: #f8f8ff; }
+
+  th.c, td.c { text-align: center; }
+
+  /* 2단 */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* 3단 */
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* 카드 */
+  .card {
+    border: 1px solid #e0e0e0;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    align-items: center;
+  }
+
+  .field-row label {
+    font-size: 10px;
+    color: #888;
+    min-width: 60px;
+    flex-shrink: 0;
+  }
+
+  /* 스케치 영역 */
+  .sketch-area {
+    border: 2px dashed #ccc;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+    font-size: 12px;
+    margin-bottom: 12px;
+    padding: 20px;
+  }
+
+  .sketch-area textarea {
+    border: none;
+    background: transparent;
+    text-align: center;
+    min-height: 160px;
+    resize: vertical;
+  }
+
+  /* 하단 고정 바 */
+  .action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    z-index: 200;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+  }
+
+  .action-bar .status {
+    font-size: 11px;
+    color: #888;
+    margin-right: auto;
+  }
+
+  .action-bar .status.saving { color: #b8860b; }
+  .action-bar .status.saved { color: #28a745; }
+  .action-bar .status.error { color: #dc3545; }
+
+  .btn {
+    padding: 8px 24px;
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: 600;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn:hover { background: #f5f5f5; }
+
+  .btn-draft {
+    border-color: #888;
+    color: #444;
+  }
+
+  .btn-submit {
+    background: #222;
+    color: #fff;
+    border-color: #222;
+  }
+
+  .btn-submit:hover { background: #444; }
+
+  .btn-pdf {
+    border-color: #555;
+    color: #333;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* 알림 */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #222;
+    color: #fff;
+    padding: 12px 20px;
+    font-size: 12px;
+    border-radius: 4px;
+    z-index: 300;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .toast.success { background: #28a745; }
+  .toast.error { background: #dc3545; }
+
+  /* 유저 저니 맵 테이블 */
+  .journey-table th { font-size: 9px; }
+  .journey-table td textarea { min-height: 32px; }
+
+  @media print {
+    .toc, .action-bar, .toast { display: none !important; }
+    body { background: white; }
+    .main { margin-left: 0; padding: 0; }
+    .cover { min-height: auto; padding: 40px; page-break-after: always; }
+    .section-wrap { padding: 24px 30px; page-break-inside: avoid; border-bottom: none; }
+
+    input[type="text"], textarea, select {
+      border: none !important;
+      background: none !important;
+      padding: 2px 0;
+      -webkit-appearance: none;
+      color: #222;
+      font-size: 10px;
+    }
+
+    textarea { min-height: unset; height: auto; overflow: visible; }
+    input::placeholder, textarea::placeholder { color: transparent; }
+    td { padding: 3px 6px; }
+    .sketch-area { border-color: #ddd; }
+  }
+
+  @page { size: A4; margin: 10mm; }
+</style>
+</head>
+<body>
+
+<!-- 알림 -->
+<div class="toast" id="toast"></div>
+
+<!-- 좌측 목차 사이드바 -->
+<nav class="toc">
+  <div class="toc-title">PRD 상세 기획안</div>
+  <a href="#sec01"><span class="num">01</span>문서 이력</a>
+  <a href="#sec02"><span class="num">02</span>개요</a>
+  <a href="#sec03"><span class="num">03</span>배경 및 목적</a>
+  <a href="#sec04"><span class="num">04</span>대상 사용자 & 페르소나</a>
+  <a href="#sec05"><span class="num">05</span>사용자 시나리오</a>
+  <a href="#sec06"><span class="num">06</span>AS-IS / TO-BE</a>
+  <a href="#sec07"><span class="num">07</span>기능 요구사항</a>
+  <a href="#sec08"><span class="num">08</span>화면 설계</a>
+  <a href="#sec09"><span class="num">09</span>데이터 & 기술 구조</a>
+  <a href="#sec10"><span class="num">10</span>비기능 요구사항</a>
+  <a href="#sec11"><span class="num">11</span>일정</a>
+  <a href="#sec12"><span class="num">12</span>성공 지표</a>
+  <a href="#sec13"><span class="num">13</span>리스크</a>
+</nav>
+
+<div class="main">
+
+  <!-- ═══════════════════════ 표지 ═══════════════════════ -->
+  <div class="cover" id="sec00">
+    <div class="doc-type">Product Requirements Document</div>
+    <h1>PRD 상세 기획안</h1>
+    <div class="project-name" id="coverProjectName">AI 업무 효율화 프로젝트</div>
+    <div class="cover-meta">
+      <span>작성자</span> <input type="text" id="meta_author" style="width:120px;border:none;border-bottom:1px solid #ccc;background:transparent;text-align:center;font-size:12px;" placeholder="예) 홍길동"><br>
+      <span>부서</span> <input type="text" id="meta_dept" style="width:120px;border:none;border-bottom:1px solid #ccc;background:transparent;text-align:center;font-size:12px;" placeholder="예) WM사업부"><br>
+      <span>작성일</span> <input type="text" id="meta_date" style="width:120px;border:none;border-bottom:1px solid #ccc;background:transparent;text-align:center;font-size:12px;" placeholder="2026. . ."><br>
+      <span>버전</span> <input type="text" id="meta_version" style="width:120px;border:none;border-bottom:1px solid #ccc;background:transparent;text-align:center;font-size:12px;" value="v0.1">
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ 01. 문서 이력 ═══════════════════════ -->
+  <div class="section-wrap" id="sec01">
+    <div class="section-header"><span class="num">01</span>문서 이력</div>
+    <table>
+      <tr><th style="width:80px;">버전</th><th style="width:100px;">날짜</th><th>변경 내용</th><th style="width:80px;">작성자</th></tr>
+      <tr>
+        <td><input type="text" id="hist1_ver" placeholder="예) v0.1"></td>
+        <td><input type="text" id="hist1_date" placeholder="예) 2026.04.01"></td>
+        <td><input type="text" id="hist1_desc" placeholder="예) 초안 작성"></td>
+        <td><input type="text" id="hist1_author" placeholder="예) 홍길동"></td>
+      </tr>
+      <tr>
+        <td><input type="text" id="hist2_ver" placeholder="예) v0.2"></td>
+        <td><input type="text" id="hist2_date" placeholder="예) 2026.04.15"></td>
+        <td><input type="text" id="hist2_desc" placeholder="예) 기능 요구사항 상세화"></td>
+        <td><input type="text" id="hist2_author" placeholder="예) 홍길동"></td>
+      </tr>
+      <tr>
+        <td><input type="text" id="hist3_ver" placeholder="예) v1.0"></td>
+        <td><input type="text" id="hist3_date" placeholder="예) 2026.05.01"></td>
+        <td><input type="text" id="hist3_desc" placeholder="예) 최종 검토 완료"></td>
+        <td><input type="text" id="hist3_author" placeholder="예) 홍길동"></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════ 02. 개요 ═══════════════════════ -->
+  <div class="section-wrap" id="sec02">
+    <div class="section-header"><span class="num">02</span>개요 <span style="font-size:11px;font-weight:400;color:#888;">Executive Summary</span></div>
+
+    <div class="field-row" style="margin-bottom:12px;">
+      <label style="min-width:80px;">프로젝트명 *</label>
+      <input type="text" id="meta_project" placeholder="예) AI 포트폴리오 리밸런싱 어시스턴트" required>
+    </div>
+
+    <div class="sub-title">Executive Summary</div>
+    <div class="desc">프로젝트 전체를 3~5문장으로 요약합니다. 무엇을, 왜, 누구를 위해, 어떤 효과를 기대하는지 포함하세요.</div>
+    <textarea id="summary" class="xtall" placeholder="예) 미래에셋증권 WM사업부 PB 직원의 고객 포트폴리오 리밸런싱 업무를 AI로 자동화합니다. 현재 건당 2시간 소요되는 맞춤 제안서 작성을 15분 이내로 단축하여, 분기 미팅 소화율을 45%에서 90%로 높이고, 고객 NPS를 32점에서 55점으로 향상시킬 것으로 기대합니다."></textarea>
+  </div>
+
+  <!-- ═══════════════════════ 03. 배경 및 목적 ═══════════════════════ -->
+  <div class="section-wrap" id="sec03">
+    <div class="section-header"><span class="num">03</span>배경 및 목적</div>
+
+    <div class="sub-title">3-1. 사업 환경</div>
+    <div class="desc">현재 시장 상황, 경쟁 환경, 내부 역량 등 프로젝트 추진 배경을 기술합니다.</div>
+    <textarea id="env" class="tall" placeholder="예) 글로벌 자산운용사들이 AI 기반 로보어드바이저를 도입하여 고객 경험을 혁신하는 추세. 국내 증권사 중 AI 리밸런싱 도입사 3곳. 당사 PB 고객 만족도 하락 추세(전년 대비 -5pt)."></textarea>
+
+    <div class="sub-title">3-2. 문제 정의</div>
+    <div class="desc">정량적 근거를 포함하여 해결하려는 핵심 문제를 구체적으로 서술합니다.</div>
+    <textarea id="problem_detail" class="tall" placeholder="예) VIP 고객 1,200명 대비 담당 PB 40명(인당 30명 관리). 분기별 리밸런싱 미팅 소화율 45%. 수동 리포트 작성에 건당 2시간 소요. 연간 미수행 미팅으로 인한 고객 이탈 추정 매출 손실 약 50억 원."></textarea>
+
+    <div class="sub-title">3-3. SMART 목표</div>
+    <table>
+      <tr><th style="width:100px;">구분</th><th>내용</th></tr>
+      <tr>
+        <td><strong>S</strong>pecific</td>
+        <td><input type="text" id="smart_s" placeholder="예) PB 직원용 AI 리밸런싱 제안서 자동 생성 시스템 구축"></td>
+      </tr>
+      <tr>
+        <td><strong>M</strong>easurable</td>
+        <td><input type="text" id="smart_m" placeholder="예) 제안서 작성 시간 2시간→15분, 미팅 소화율 45%→90%"></td>
+      </tr>
+      <tr>
+        <td><strong>A</strong>chievable</td>
+        <td><input type="text" id="smart_a" placeholder="예) 기존 고객 데이터 API와 LLM 기술을 활용하여 6개월 내 구현 가능"></td>
+      </tr>
+      <tr>
+        <td><strong>R</strong>elevant</td>
+        <td><input type="text" id="smart_r" placeholder="예) 당사 디지털 전환 전략 및 고객 만족도 향상 KPI와 직결"></td>
+      </tr>
+      <tr>
+        <td><strong>T</strong>ime-bound</td>
+        <td><input type="text" id="smart_t" placeholder="예) 2026년 10월까지 MVP 출시, 2027년 1월 전체 PB 확대 적용"></td>
+      </tr>
+    </table>
+
+    <div class="sub-title">3-4. In Scope / Out of Scope</div>
+    <div class="two-col">
+      <div>
+        <div style="font-size:10px;font-weight:600;color:#444;margin-bottom:4px;">In Scope (포함)</div>
+        <textarea id="in_scope" class="tall" placeholder="예) PB용 AI 리밸런싱 제안서 자동 생성, 시장 동향 브리핑, 고객 포트폴리오 분석 대시보드, 사내 시스템(HTS/CRM) 연동"></textarea>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:600;color:#444;margin-bottom:4px;">Out of Scope (제외)</div>
+        <textarea id="out_scope" class="tall" placeholder="예) 고객 직접 사용 앱, 자동 매매 실행(주문), 해외 시장 데이터 연동, 모바일 앱 개발(2차 범위)"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ 04. 대상 사용자 & 페르소나 ═══════════════════════ -->
+  <div class="section-wrap" id="sec04">
+    <div class="section-header"><span class="num">04</span>대상 사용자 & 페르소나</div>
+
+    <div class="sub-title">4-1. 사용자 세그먼트</div>
+    <table>
+      <tr><th>구분</th><th>사용자 유형</th><th>주요 업무</th><th>핵심 니즈</th></tr>
+      <tr>
+        <td class="c">Primary</td>
+        <td><input type="text" id="user_pri_type" placeholder="예) PB (자산관리사)"></td>
+        <td><input type="text" id="user_pri_task" placeholder="예) VIP 고객 포트폴리오 관리 및 리밸런싱 상담"></td>
+        <td><input type="text" id="user_pri_need" placeholder="예) 맞춤 제안서를 빠르게 생성하여 상담 품질 향상"></td>
+      </tr>
+      <tr>
+        <td class="c">Secondary</td>
+        <td><input type="text" id="user_sec_type" placeholder="예) 지점장"></td>
+        <td><input type="text" id="user_sec_task" placeholder="예) PB 성과 관리 및 고객 만족도 모니터링"></td>
+        <td><input type="text" id="user_sec_need" placeholder="예) 팀 전체 상담 품질 현황을 한눈에 파악"></td>
+      </tr>
+    </table>
+
+    <div class="sub-title">4-2. 페르소나</div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">페르소나 1</div>
+        <div class="field-row"><label>이름/역할</label><input type="text" id="p1_name" placeholder="예) 김민수 / PB 5년차"></div>
+        <div class="field-row"><label>주요 업무</label><input type="text" id="p1_task" placeholder="예) VIP 고객 30명 자산관리, 분기별 리밸런싱 미팅"></div>
+        <div class="field-row"><label>Pain Point</label><input type="text" id="p1_pain" placeholder="예) 고객별 맞춤 제안서 수동 작성에 하루 6시간 소요"></div>
+        <div class="field-row"><label>목표</label><input type="text" id="p1_goal" placeholder="예) 제안서 자동화로 상담 건수 2배 확대, 고객 만족도 향상"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">페르소나 2</div>
+        <div class="field-row"><label>이름/역할</label><input type="text" id="p2_name" placeholder="예) 이영희 / 지점장 10년차"></div>
+        <div class="field-row"><label>주요 업무</label><input type="text" id="p2_task" placeholder="예) PB팀 15명 성과 관리, 고객 CS 대응"></div>
+        <div class="field-row"><label>Pain Point</label><input type="text" id="p2_pain" placeholder="예) PB별 상담 품질 편차가 커 관리가 어려움"></div>
+        <div class="field-row"><label>목표</label><input type="text" id="p2_goal" placeholder="예) 표준화된 AI 제안서로 팀 전체 상담 품질 균일화"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ 05. 사용자 시나리오 ═══════════════════════ -->
+  <div class="section-wrap" id="sec05">
+    <div class="section-header"><span class="num">05</span>사용자 시나리오</div>
+
+    <div class="sub-title">5-1. Given-When-Then 시나리오</div>
+    <div class="desc">주요 사용자 시나리오를 Given(전제 조건)-When(행동)-Then(기대 결과) 형식으로 작성합니다.</div>
+
+    <div class="card">
+      <div class="card-title">시나리오 1</div>
+      <div class="field-row"><label>Given</label><input type="text" id="sc1_given" placeholder="예) PB가 VIP 고객 A의 분기 리밸런싱 미팅을 앞두고 있을 때"></div>
+      <div class="field-row"><label>When</label><input type="text" id="sc1_when" placeholder="예) AI 리밸런싱 어시스턴트에 고객 A의 포트폴리오를 입력하면"></div>
+      <div class="field-row"><label>Then</label><input type="text" id="sc1_then" placeholder="예) 시장 분석 + 맞춤 리밸런싱 제안서가 10분 내 자동 생성된다"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">시나리오 2</div>
+      <div class="field-row"><label>Given</label><input type="text" id="sc2_given" placeholder="예) 시장에 급격한 변동(금리 인상, 지정학적 리스크)이 발생했을 때"></div>
+      <div class="field-row"><label>When</label><input type="text" id="sc2_when" placeholder="예) PB가 대시보드에서 영향 분석 버튼을 클릭하면"></div>
+      <div class="field-row"><label>Then</label><input type="text" id="sc2_then" placeholder="예) 담당 고객 포트폴리오별 영향도와 대응 가이드가 자동 생성된다"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">시나리오 3</div>
+      <div class="field-row"><label>Given</label><input type="text" id="sc3_given" placeholder="예) 지점장이 월간 팀 성과를 리뷰하려 할 때"></div>
+      <div class="field-row"><label>When</label><input type="text" id="sc3_when" placeholder="예) 관리자 대시보드에서 PB별 상담 현황을 조회하면"></div>
+      <div class="field-row"><label>Then</label><input type="text" id="sc3_then" placeholder="예) PB별 미팅 건수, 제안서 품질 점수, 고객 피드백 요약이 표시된다"></div>
+    </div>
+
+    <div class="sub-title">5-2. 유저 저니 맵</div>
+    <div class="desc">핵심 사용자(Primary)의 서비스 이용 여정을 단계별로 작성합니다.</div>
+    <table class="journey-table">
+      <tr>
+        <th style="width:80px;">단계</th>
+        <th>인지</th>
+        <th>접근</th>
+        <th>사용</th>
+        <th>결과 확인</th>
+        <th>재사용</th>
+      </tr>
+      <tr>
+        <td style="font-weight:600;font-size:10px;">행동</td>
+        <td><textarea id="journey_act1" placeholder="예) 미팅 일정 확인, 고객 정보 조회"></textarea></td>
+        <td><textarea id="journey_act2" placeholder="예) AI 어시스턴트 접속, 고객 선택"></textarea></td>
+        <td><textarea id="journey_act3" placeholder="예) 제안서 생성 요청, 옵션 조정"></textarea></td>
+        <td><textarea id="journey_act4" placeholder="예) 생성된 제안서 검토, 수정"></textarea></td>
+        <td><textarea id="journey_act5" placeholder="예) 미팅 후 피드백 입력, 재생성"></textarea></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;font-size:10px;">감정</td>
+        <td><textarea id="journey_feel1" placeholder="예) 시간 부족에 대한 부담"></textarea></td>
+        <td><textarea id="journey_feel2" placeholder="예) 새 도구에 대한 기대/불안"></textarea></td>
+        <td><textarea id="journey_feel3" placeholder="예) 빠른 생성에 놀람"></textarea></td>
+        <td><textarea id="journey_feel4" placeholder="예) 품질에 대한 안도"></textarea></td>
+        <td><textarea id="journey_feel5" placeholder="예) 신뢰감, 의존도 상승"></textarea></td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;font-size:10px;">Pain Point</td>
+        <td><textarea id="journey_pain1" placeholder="예) 어떤 고객부터 준비할지 우선순위 불분명"></textarea></td>
+        <td><textarea id="journey_pain2" placeholder="예) 로그인/접근 절차 복잡"></textarea></td>
+        <td><textarea id="journey_pain3" placeholder="예) AI 결과의 정확성 의문"></textarea></td>
+        <td><textarea id="journey_pain4" placeholder="예) 수정이 번거로움"></textarea></td>
+        <td><textarea id="journey_pain5" placeholder="예) 이전 피드백이 반영 안 됨"></textarea></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════ 06. AS-IS / TO-BE ═══════════════════════ -->
+  <div class="section-wrap" id="sec06">
+    <div class="section-header"><span class="num">06</span>AS-IS / TO-BE</div>
+
+    <div class="sub-title">6-1. 현행 프로세스 (AS-IS)</div>
+    <div class="desc">현재 업무 프로세스를 단계별로 작성합니다.</div>
+    <table>
+      <tr><th style="width:60px;">단계</th><th>내용</th></tr>
+      <tr><td class="c">Step 1</td><td><input type="text" id="asis_step1" placeholder="예) 고객 포트폴리오 데이터를 HTS에서 수동 조회 및 엑셀 다운로드"></td></tr>
+      <tr><td class="c">Step 2</td><td><input type="text" id="asis_step2" placeholder="예) 시장 데이터(환율, 금리, 지수)를 각 사이트에서 개별 수집"></td></tr>
+      <tr><td class="c">Step 3</td><td><input type="text" id="asis_step3" placeholder="예) 엑셀에서 수동 분석 후 PowerPoint로 제안서 작성"></td></tr>
+      <tr><td class="c">Step 4</td><td><input type="text" id="asis_step4" placeholder="예) 팀장 검토 → 수정 → 최종본 인쇄 후 미팅"></td></tr>
+    </table>
+
+    <div class="sub-title">6-2. 개선 비교</div>
+    <table>
+      <tr><th style="width:80px;">비교 항목</th><th>AS-IS</th><th>TO-BE</th><th style="width:80px;">개선 효과</th></tr>
+      <tr>
+        <td>소요시간</td>
+        <td><input type="text" id="cmp_time_as" placeholder="예) 건당 2시간"></td>
+        <td><input type="text" id="cmp_time_to" placeholder="예) 건당 15분"></td>
+        <td><input type="text" id="cmp_time_eff" placeholder="예) 87% 감소"></td>
+      </tr>
+      <tr>
+        <td>처리량</td>
+        <td><input type="text" id="cmp_vol_as" placeholder="예) 일 4건"></td>
+        <td><input type="text" id="cmp_vol_to" placeholder="예) 일 20건"></td>
+        <td><input type="text" id="cmp_vol_eff" placeholder="예) 5배 증가"></td>
+      </tr>
+      <tr>
+        <td>정확도</td>
+        <td><input type="text" id="cmp_acc_as" placeholder="예) PB 역량 편차 큼"></td>
+        <td><input type="text" id="cmp_acc_to" placeholder="예) 표준화된 AI 분석"></td>
+        <td><input type="text" id="cmp_acc_eff" placeholder="예) 편차 해소"></td>
+      </tr>
+      <tr>
+        <td>비용</td>
+        <td><input type="text" id="cmp_cost_as" placeholder="예) PB 인건비 월 800만원/인"></td>
+        <td><input type="text" id="cmp_cost_to" placeholder="예) AI 운영비 월 200만원"></td>
+        <td><input type="text" id="cmp_cost_eff" placeholder="예) 75% 절감"></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════ 07. 기능 요구사항 ═══════════════════════ -->
+  <div class="section-wrap" id="sec07">
+    <div class="section-header"><span class="num">07</span>기능 요구사항</div>
+
+    <div class="sub-title">7-1. 기능 목록 (MoSCoW)</div>
+    <table>
+      <tr><th style="width:40px;">ID</th><th>기능명</th><th>설명</th><th style="width:70px;">우선순위</th></tr>
+      <tr>
+        <td class="c">F-01</td>
+        <td><input type="text" id="df1_name" placeholder="예) AI 리밸런싱 제안서 생성"></td>
+        <td><input type="text" id="df1_desc" placeholder="예) 고객 보유종목+시장동향 분석 후 맞춤 리밸런싱 제안서를 AI로 자동 생성"></td>
+        <td><select id="df1_priority"><option value="Must">Must</option><option value="Should">Should</option><option value="Could">Could</option></select></td>
+      </tr>
+      <tr>
+        <td class="c">F-02</td>
+        <td><input type="text" id="df2_name" placeholder="예) 시장 동향 브리핑"></td>
+        <td><input type="text" id="df2_desc" placeholder="예) 당일 시장 이슈를 고객 포트폴리오 관점에서 요약 브리핑 생성"></td>
+        <td><select id="df2_priority"><option value="Must">Must</option><option value="Should">Should</option><option value="Could">Could</option></select></td>
+      </tr>
+      <tr>
+        <td class="c">F-03</td>
+        <td><input type="text" id="df3_name" placeholder="예) 고객 이탈 위험 알림"></td>
+        <td><input type="text" id="df3_desc" placeholder="예) 거래 패턴/접촉 이력 분석으로 이탈 위험 고객 조기 식별"></td>
+        <td><select id="df3_priority"><option value="Must">Must</option><option value="Should">Should</option><option value="Could">Could</option></select></td>
+      </tr>
+      <tr>
+        <td class="c">F-04</td>
+        <td><input type="text" id="df4_name" placeholder="예) 상담 이력 자동 정리"></td>
+        <td><input type="text" id="df4_desc" placeholder="예) 고객 상담 내용을 AI가 자동 요약하여 CRM에 기록"></td>
+        <td><select id="df4_priority"><option value="Must">Must</option><option value="Should">Should</option><option value="Could">Could</option></select></td>
+      </tr>
+      <tr>
+        <td class="c">F-05</td>
+        <td><input type="text" id="df5_name" placeholder="예) 관리자 대시보드"></td>
+        <td><input type="text" id="df5_desc" placeholder="예) 지점장용 PB별 상담 현황, 제안서 품질 점수 종합 대시보드"></td>
+        <td><select id="df5_priority"><option value="Must">Must</option><option value="Should">Should</option><option value="Could">Could</option></select></td>
+      </tr>
+    </table>
+
+    <div class="sub-title">7-2. 기능 상세 (I/P/O)</div>
+    <div class="desc">핵심 기능의 Input(입력) → Process(처리) → Output(출력) 및 비즈니스 규칙을 상세히 작성합니다.</div>
+
+    <div class="card">
+      <div class="card-title">F-01 상세</div>
+      <div class="field-row"><label>Input</label><input type="text" id="df1_input" placeholder="예) 고객ID, 보유종목 리스트, 투자 성향, 시장 데이터"></div>
+      <div class="field-row"><label>Process</label><input type="text" id="df1_process" placeholder="예) 포트폴리오 분석 → 시장 동향 매칭 → LLM 기반 제안서 생성"></div>
+      <div class="field-row"><label>Output</label><input type="text" id="df1_output" placeholder="예) PDF 제안서(종목별 비중 조정안, 사유, 예상 수익률)"></div>
+      <div class="field-row"><label>비즈니스 규칙</label><input type="text" id="df1_rule" placeholder="예) 적합성 등급 초과 상품 제안 금지, 최대 포지션 30% 제한"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">F-02 상세</div>
+      <div class="field-row"><label>Input</label><input type="text" id="df2_input" placeholder="예) 실시간 시장 데이터, 뉴스 피드, 고객 포트폴리오"></div>
+      <div class="field-row"><label>Process</label><input type="text" id="df2_process" placeholder="예) 뉴스 수집 → 영향도 분석 → 고객별 맞춤 요약 생성"></div>
+      <div class="field-row"><label>Output</label><input type="text" id="df2_output" placeholder="예) 브리핑 카드(시장 요약, 포트폴리오 영향, 대응 가이드)"></div>
+      <div class="field-row"><label>비즈니스 규칙</label><input type="text" id="df2_rule" placeholder="예) 투자 추천이 아닌 정보 제공 목적 명시, 법적 고지 포함"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ 08. 화면 설계 ═══════════════════════ -->
+  <div class="section-wrap" id="sec08">
+    <div class="section-header"><span class="num">08</span>화면 설계 <span style="font-size:11px;font-weight:400;color:#888;">Wireframe Sketch</span></div>
+    <div class="desc">주요 화면의 레이아웃을 텍스트 또는 ASCII로 스케치합니다. 인쇄 후 손으로 그려도 됩니다.</div>
+
+    <div class="sub-title">메인 화면</div>
+    <div class="sketch-area">
+      <textarea id="sketch_main" placeholder="예) [상단 GNB: 로고 | 고객 검색 | 알림 | 프로필]&#10;&#10;[좌측 사이드바]          [메인 영역]&#10; - 고객 목록              - 선택 고객 포트폴리오 현황&#10; - 즐겨찾기               - AI 제안서 생성 버튼&#10; - 최근 조회              - 시장 브리핑 카드&#10;&#10;[하단: 상태바 | 자동저장 표시]"></textarea>
+    </div>
+
+    <div class="sub-title">제안서 생성 화면</div>
+    <div class="sketch-area">
+      <textarea id="sketch_detail" placeholder="예) [Step 1: 고객 선택] → [Step 2: 옵션 설정(투자성향/기간)] → [Step 3: AI 생성 중...] → [Step 4: 결과 미리보기 + 수정] → [Step 5: PDF 다운로드/이메일 발송]"></textarea>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ 09. 데이터 & 기술 구조 ═══════════════════════ -->
+  <div class="section-wrap" id="sec09">
+    <div class="section-header"><span class="num">09</span>데이터 & 기술 구조</div>
+
+    <div class="sub-title">9-1. 기술 스택</div>
+    <table>
+      <tr><th style="width:100px;">구분</th><th>기술/도구</th></tr>
+      <tr><td>Frontend</td><td><input type="text" id="tech_front" placeholder="예) React, Next.js, Tailwind CSS"></td></tr>
+      <tr><td>Backend</td><td><input type="text" id="tech_back" placeholder="예) Python FastAPI, Node.js"></td></tr>
+      <tr><td>AI/ML</td><td><input type="text" id="tech_ai" placeholder="예) GPT-4o, Claude, RAG(Pinecone), LangChain"></td></tr>
+      <tr><td>Database</td><td><input type="text" id="tech_db" placeholder="예) PostgreSQL, Redis(캐시), S3(문서 저장)"></td></tr>
+      <tr><td>Infra</td><td><input type="text" id="tech_infra" placeholder="예) AWS(사내 폐쇄망), Docker, K8s, CI/CD(Jenkins)"></td></tr>
+    </table>
+
+    <div class="sub-title">9-2. 데이터 흐름 / 시스템 구성도</div>
+    <div class="desc">시스템 간 데이터 흐름을 텍스트로 서술합니다.</div>
+    <div class="sketch-area">
+      <textarea id="sketch_architecture" placeholder="예) [HTS/CRM API] → 고객 데이터 수집 → [Backend] → LLM 분석 요청 → [AI Engine]&#10;       ↓                                        ↓&#10;  [시장 데이터 API]                      [제안서 생성 결과]&#10;       ↓                                        ↓&#10;  뉴스/시세 수집 ────────→ [RAG DB] ←── 제안서 저장 → [Frontend 대시보드]"></textarea>
+    </div>
+
+    <div class="sub-title">9-3. 외부 연동</div>
+    <textarea id="external_api" class="tall" placeholder="예) 1) HTS API: 고객 보유종목, 잔고 조회 (실시간)&#10;2) CRM API: 고객 프로필, 투자 성향, 상담 이력 (배치/실시간)&#10;3) 시장 데이터 API: 한국거래소, Bloomberg (실시간)&#10;4) 뉴스 API: 연합인포맥스, 이데일리 (실시간)"></textarea>
+  </div>
+
+  <!-- ═══════════════════════ 10. 비기능 요구사항 ═══════════════════════ -->
+  <div class="section-wrap" id="sec10">
+    <div class="section-header"><span class="num">10</span>비기능 요구사항</div>
+    <table>
+      <tr><th style="width:100px;">항목</th><th>요구사항</th></tr>
+      <tr><td>응답 속도</td><td><input type="text" id="nfr_speed" placeholder="예) 제안서 생성 30초 이내, 일반 페이지 로딩 2초 이내"></td></tr>
+      <tr><td>동시 접속</td><td><input type="text" id="nfr_concurrent" placeholder="예) 최대 100명 동시 접속 (PB 40명 + 지점장 20명 + 여유분)"></td></tr>
+      <tr><td>가용성</td><td><input type="text" id="nfr_uptime" placeholder="예) 99.5% (영업시간 기준), 장애 복구 시간 30분 이내"></td></tr>
+      <tr><td>보안</td><td><input type="text" id="nfr_security" placeholder="예) 사내 폐쇄망 운영, 전 구간 TLS 암호화, 고객 데이터 마스킹"></td></tr>
+      <tr><td>규제 준수</td><td><input type="text" id="nfr_regulation" placeholder="예) 전자금융감독규정, 개인정보보호법, 자본시장법 적합성 원칙"></td></tr>
+      <tr><td>접근성</td><td><input type="text" id="nfr_access" placeholder="예) WCAG 2.1 AA 준수, 크롬/엣지 최신 2개 버전 지원"></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════ 11. 일정 ═══════════════════════ -->
+  <div class="section-wrap" id="sec11">
+    <div class="section-header"><span class="num">11</span>일정 <span style="font-size:11px;font-weight:400;color:#888;">Roadmap</span></div>
+    <table>
+      <tr><th style="width:60px;">Phase</th><th style="width:100px;">기간</th><th>주요 산출물</th><th>마일스톤</th></tr>
+      <tr>
+        <td class="c">1</td>
+        <td><input type="text" id="phase1_period" placeholder="예) 1~2개월"></td>
+        <td><input type="text" id="phase1_output" placeholder="예) AI 제안서 생성 MVP 프로토타입"></td>
+        <td><input type="text" id="phase1_milestone" placeholder="예) 내부 시연 및 PB 5명 파일럿"></td>
+      </tr>
+      <tr>
+        <td class="c">2</td>
+        <td><input type="text" id="phase2_period" placeholder="예) 3~4개월"></td>
+        <td><input type="text" id="phase2_output" placeholder="예) 시장 브리핑 + 이탈 예측 추가"></td>
+        <td><input type="text" id="phase2_milestone" placeholder="예) 전체 PB 대상 베타 오픈"></td>
+      </tr>
+      <tr>
+        <td class="c">3</td>
+        <td><input type="text" id="phase3_period" placeholder="예) 5~6개월"></td>
+        <td><input type="text" id="phase3_output" placeholder="예) CRM 연동, 상담 이력 자동화"></td>
+        <td><input type="text" id="phase3_milestone" placeholder="예) 정식 오픈 및 타 사업부 확산"></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════ 12. 성공 지표 ═══════════════════════ -->
+  <div class="section-wrap" id="sec12">
+    <div class="section-header"><span class="num">12</span>성공 지표 <span style="font-size:11px;font-weight:400;color:#888;">KPI</span></div>
+
+    <div class="sub-title">12-1. 정량 지표</div>
+    <table>
+      <tr><th>KPI</th><th>현재값</th><th>목표값</th><th>측정 방법</th></tr>
+      <tr>
+        <td><input type="text" id="kpi1_name" placeholder="예) 제안서 작성 시간"></td>
+        <td><input type="text" id="kpi1_current" placeholder="예) 2시간/건"></td>
+        <td><input type="text" id="kpi1_target" placeholder="예) 15분/건"></td>
+        <td><input type="text" id="kpi1_method" placeholder="예) 시스템 로그 분석"></td>
+      </tr>
+      <tr>
+        <td><input type="text" id="kpi2_name" placeholder="예) 분기 미팅 소화율"></td>
+        <td><input type="text" id="kpi2_current" placeholder="예) 45%"></td>
+        <td><input type="text" id="kpi2_target" placeholder="예) 90%"></td>
+        <td><input type="text" id="kpi2_method" placeholder="예) CRM 미팅 기록 집계"></td>
+      </tr>
+      <tr>
+        <td><input type="text" id="kpi3_name" placeholder="예) 고객 만족도 (NPS)"></td>
+        <td><input type="text" id="kpi3_current" placeholder="예) 32점"></td>
+        <td><input type="text" id="kpi3_target" placeholder="예) 55점"></td>
+        <td><input type="text" id="kpi3_method" placeholder="예) 분기별 고객 설문"></td>
+      </tr>
+    </table>
+
+    <div class="sub-title">12-2. 정성 지표</div>
+    <textarea id="qualitative" class="tall" placeholder="예) PB 직원 만족도 향상(설문 기반), 상담 품질 균일화 체감, 신규 고객 유치 시 AI 도구 활용 사례 확보, 사내 AI 혁신 선도 사례로 타 부서 확산 기반 마련"></textarea>
+  </div>
+
+  <!-- ═══════════════════════ 13. 리스크 ═══════════════════════ -->
+  <div class="section-wrap" id="sec13">
+    <div class="section-header"><span class="num">13</span>리스크</div>
+    <table>
+      <tr><th>리스크</th><th style="width:60px;">영향도</th><th style="width:60px;">확률</th><th>대응 방안</th></tr>
+      <tr>
+        <td><input type="text" id="risk1" placeholder="예) AI 생성 정보의 정확성/할루시네이션"></td>
+        <td><select id="risk1_impact"><option value="H">H</option><option value="M">M</option><option value="L">L</option></select></td>
+        <td><select id="risk1_prob"><option value="H">H</option><option value="M" selected>M</option><option value="L">L</option></select></td>
+        <td><input type="text" id="risk1_response" placeholder="예) PB 최종 검토 필수화, 팩트체크 자동 검증 로직, RAG 기반 출처 표시"></td>
+      </tr>
+      <tr>
+        <td><input type="text" id="risk2" placeholder="예) 고객 개인정보 보안 이슈"></td>
+        <td><select id="risk2_impact"><option value="H">H</option><option value="M">M</option><option value="L">L</option></select></td>
+        <td><select id="risk2_prob"><option value="H">H</option><option value="M">M</option><option value="L" selected>L</option></select></td>
+        <td><input type="text" id="risk2_response" placeholder="예) 사내 폐쇄망 운영, 데이터 암호화, 접근 권한 관리, 정기 보안 감사"></td>
+      </tr>
+      <tr>
+        <td><input type="text" id="risk3" placeholder="예) 현업 사용자 채택률 저하"></td>
+        <td><select id="risk3_impact"><option value="H">H</option><option value="M" selected>M</option><option value="L">L</option></select></td>
+        <td><select id="risk3_prob"><option value="H">H</option><option value="M" selected>M</option><option value="L">L</option></select></td>
+        <td><input type="text" id="risk3_response" placeholder="예) 파일럿 팀 우선 도입, 교육 병행, 피드백 반영 개선, 챔피언 유저 활용"></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 푸터 -->
+  <div style="background:#fff;padding:16px 60px;border-top:1px solid #e0e0e0;font-size:9px;color:#aaa;display:flex;justify-content:space-between;">
+    <span>미래에셋증권 AI 실무 교육</span>
+    <span>Confidential</span>
+  </div>
+
+</div><!-- /main -->
+
+<!-- 하단 액션 바 -->
+<div class="action-bar">
+  <div class="status" id="statusText">미저장</div>
+  <button class="btn btn-draft" onclick="resetForm()">초기화</button>
+  <button class="btn btn-draft" onclick="saveLocal()">로컬 임시저장</button>
+  <button class="btn btn-draft" onclick="submitToSheet('draft')">시트 임시저장</button>
+  <button class="btn btn-pdf" onclick="downloadPDF()">PDF 다운로드</button>
+  <button class="btn btn-pdf" onclick="downloadMD()">MD 다운로드</button>
+  <button class="btn btn-submit" style="margin-left:auto;" onclick="submitToSheet('submit')">제출</button>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// 설정 — Apps Script 웹앱 URL
+// ════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxW7k6CoNcs50-0lFQfkykNE27g3ZA27dJTQLPZvSwhh3Si_TXXCvhAacPUlkKQLw/exec';
+
+// ════════════════════════════════════════════
+// 메타 필드 ID
+// ════════════════════════════════════════════
+const META_IDS = ['meta_project', 'meta_author', 'meta_dept', 'meta_date', 'meta_version'];
+
+// ════════════════════════════════════════════
+// 모든 입력 필드 ID 목록 (Code.gs buildDetailedRow 매칭)
+// ════════════════════════════════════════════
+const FIELD_IDS = [
+  // 02. 개요
+  'summary',
+  // 03. 배경 및 목적
+  'env', 'problem_detail',
+  'smart_s', 'smart_m', 'smart_a', 'smart_r', 'smart_t',
+  'in_scope', 'out_scope',
+  // 04. 대상 사용자 & 페르소나
+  'user_pri_type', 'user_pri_task', 'user_pri_need',
+  'user_sec_type', 'user_sec_task', 'user_sec_need',
+  'p1_name', 'p1_task', 'p1_pain', 'p1_goal',
+  'p2_name', 'p2_task', 'p2_pain', 'p2_goal',
+  // 05. 사용자 시나리오
+  'sc1_given', 'sc1_when', 'sc1_then',
+  'sc2_given', 'sc2_when', 'sc2_then',
+  'sc3_given', 'sc3_when', 'sc3_then',
+  // 06. AS-IS / TO-BE
+  'asis_step1', 'asis_step2', 'asis_step3', 'asis_step4',
+  'cmp_time_as', 'cmp_time_to', 'cmp_time_eff',
+  'cmp_vol_as', 'cmp_vol_to', 'cmp_vol_eff',
+  'cmp_acc_as', 'cmp_acc_to', 'cmp_acc_eff',
+  'cmp_cost_as', 'cmp_cost_to', 'cmp_cost_eff',
+  // 07. 기능 요구사항
+  'df1_name', 'df1_desc', 'df1_priority',
+  'df2_name', 'df2_desc', 'df2_priority',
+  'df3_name', 'df3_desc', 'df3_priority',
+  'df4_name', 'df4_desc', 'df4_priority',
+  'df5_name', 'df5_desc', 'df5_priority',
+  'df1_input', 'df1_process', 'df1_output', 'df1_rule',
+  'df2_input', 'df2_process', 'df2_output', 'df2_rule',
+  // 09. 데이터 & 기술 구조
+  'tech_front', 'tech_back', 'tech_ai', 'tech_db', 'tech_infra',
+  'external_api',
+  // 10. 비기능 요구사항
+  'nfr_speed', 'nfr_concurrent', 'nfr_uptime', 'nfr_security', 'nfr_regulation', 'nfr_access',
+  // 12. 성공 지표
+  'kpi1_name', 'kpi1_current', 'kpi1_target', 'kpi1_method',
+  'kpi2_name', 'kpi2_current', 'kpi2_target', 'kpi2_method',
+  'kpi3_name', 'kpi3_current', 'kpi3_target', 'kpi3_method',
+  'qualitative',
+  // 13. 리스크
+  'risk1', 'risk1_impact', 'risk1_prob', 'risk1_response',
+  'risk2', 'risk2_impact', 'risk2_prob', 'risk2_response',
+  'risk3', 'risk3_impact', 'risk3_prob', 'risk3_response',
+];
+
+// 추가 필드 (로컬 저장용, 시트 전송에는 포함하지 않아도 되는 보조 필드)
+const EXTRA_IDS = [
+  'hist1_ver', 'hist1_date', 'hist1_desc', 'hist1_author',
+  'hist2_ver', 'hist2_date', 'hist2_desc', 'hist2_author',
+  'hist3_ver', 'hist3_date', 'hist3_desc', 'hist3_author',
+  'journey_act1', 'journey_act2', 'journey_act3', 'journey_act4', 'journey_act5',
+  'journey_feel1', 'journey_feel2', 'journey_feel3', 'journey_feel4', 'journey_feel5',
+  'journey_pain1', 'journey_pain2', 'journey_pain3', 'journey_pain4', 'journey_pain5',
+  'sketch_main', 'sketch_detail', 'sketch_architecture',
+  'phase1_period', 'phase1_output', 'phase1_milestone',
+  'phase2_period', 'phase2_output', 'phase2_milestone',
+  'phase3_period', 'phase3_output', 'phase3_milestone',
+];
+
+// 전체 필드 (로컬 저장용)
+const ALL_FIELD_IDS = [...FIELD_IDS, ...EXTRA_IDS];
+
+// ════════════════════════════════════════════
+// 데이터 수집
+// ════════════════════════════════════════════
+function collectData(action) {
+  const fields = {};
+
+  ALL_FIELD_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) fields[id] = el.value;
+  });
+
+  return {
+    action: action,
+    type: 'detailed',
+    meta_project: document.getElementById('meta_project').value,
+    meta_author: document.getElementById('meta_author').value,
+    meta_dept: document.getElementById('meta_dept').value,
+    fields: fields,
+  };
+}
+
+// ════════════════════════════════════════════
+// 로컬 임시저장 (localStorage)
+// ════════════════════════════════════════════
+function saveLocal() {
+  const data = collectData('local');
+  localStorage.setItem('prd_detailed_data', JSON.stringify(data));
+  showStatus('로컬 임시저장 완료', 'saved');
+  showToast('로컬에 임시저장되었습니다.', 'success');
+}
+
+function loadLocal() {
+  const saved = localStorage.getItem('prd_detailed_data');
+  if (!saved) return;
+
+  try {
+    const data = JSON.parse(saved);
+
+    // 메타 복원
+    META_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && data[id]) el.value = data[id];
+    });
+    if (data.meta_project) document.getElementById('meta_project').value = data.meta_project;
+    if (data.meta_author) document.getElementById('meta_author').value = data.meta_author;
+    if (data.meta_dept) document.getElementById('meta_dept').value = data.meta_dept;
+
+    const f = data.fields || {};
+
+    // 모든 필드 복원
+    ALL_FIELD_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && f[id]) el.value = f[id];
+    });
+
+    // 표지 프로젝트명 동기화
+    syncCoverTitle();
+
+    showStatus('로컬 데이터 불러옴', 'saved');
+  } catch (e) {
+    console.error('로컬 데이터 복원 실패:', e);
+  }
+}
+
+// ════════════════════════════════════════════
+// 초기화
+// ════════════════════════════════════════════
+function resetForm() {
+  if (!confirm('모든 입력 내용을 초기화하시겠습니까?')) return;
+
+  META_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  ALL_FIELD_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+
+  localStorage.removeItem('prd_detailed_data');
+
+  // 표지 프로젝트명 초기화
+  document.getElementById('coverProjectName').textContent = 'AI 업무 효율화 프로젝트';
+
+  showStatus('초기화 완료', '');
+  showToast('모든 입력이 초기화되었습니다.', 'success');
+}
+
+// ════════════════════════════════════════════
+// 구글 시트 전송
+// ════════════════════════════════════════════
+async function submitToSheet(action) {
+  const author = document.getElementById('meta_author').value.trim();
+  const project = document.getElementById('meta_project').value.trim();
+
+  if (!author || !project) {
+    showToast('프로젝트명과 작성자를 입력해주세요.', 'error');
+    return;
+  }
+
+  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+    showToast('Apps Script URL이 설정되지 않았습니다.', 'error');
+    return;
+  }
+
+  const label = action === 'draft' ? '임시저장' : '제출';
+
+  if (action === 'submit') {
+    if (!confirm('기획안을 최종 제출하시겠습니까?\n제출 후에도 다시 제출하면 덮어씁니다.')) return;
+  }
+
+  showStatus(`${label} 중...`, 'saving');
+  const buttons = document.querySelectorAll('.btn');
+  buttons.forEach(b => b.disabled = true);
+
+  try {
+    const data = collectData(action);
+
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (result.status === 'success') {
+      showStatus(`${label} 완료 (${new Date().toLocaleTimeString()})`, 'saved');
+      showToast(result.message, 'success');
+      localStorage.setItem('prd_detailed_data', JSON.stringify(data));
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    showStatus('전송 실패', 'error');
+    showToast('전송 실패: ' + err.message, 'error');
+    console.error(err);
+  } finally {
+    buttons.forEach(b => b.disabled = false);
+  }
+}
+
+// ════════════════════════════════════════════
+// UI 유틸
+// ════════════════════════════════════════════
+function showStatus(msg, type) {
+  const el = document.getElementById('statusText');
+  el.textContent = msg;
+  el.className = 'status ' + (type || '');
+}
+
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + (type || '');
+  setTimeout(() => { el.className = 'toast'; }, 3000);
+}
+
+// ════════════════════════════════════════════
+// PDF 다운로드 (브라우저 인쇄)
+// ════════════════════════════════════════════
+function downloadPDF() {
+  const project = document.getElementById('meta_project').value.trim() || 'PRD';
+  const author = document.getElementById('meta_author').value.trim() || '';
+
+  const origTitle = document.title;
+  document.title = `PRD_상세_${project}${author ? '_' + author : ''}`;
+
+  window.print();
+
+  setTimeout(() => { document.title = origTitle; }, 1000);
+}
+
+// ════════════════════════════════════════════
+// MD 다운로드
+// ════════════════════════════════════════════
+function downloadMD() {
+  const v = id => (document.getElementById(id)?.value || '').trim();
+
+  let md = `# PRD 상세 기획안\n\n`;
+  md += `> Product Requirements Document — AI 업무 효율화 프로젝트\n\n`;
+
+  // 메타 정보
+  md += `| 항목 | 내용 |\n|------|------|\n`;
+  md += `| 프로젝트명 | ${v('meta_project')} |\n`;
+  md += `| 작성자 | ${v('meta_author')} |\n`;
+  md += `| 부서 | ${v('meta_dept')} |\n`;
+  md += `| 작성일 | ${v('meta_date')} |\n`;
+  md += `| 버전 | ${v('meta_version')} |\n\n`;
+
+  // 01. 문서 이력
+  md += `## 01. 문서 이력\n\n`;
+  md += `| 버전 | 날짜 | 변경 내용 | 작성자 |\n|------|------|---------|-------|\n`;
+  for (let i = 1; i <= 3; i++) {
+    const ver = v(`hist${i}_ver`);
+    if (ver) md += `| ${ver} | ${v(`hist${i}_date`)} | ${v(`hist${i}_desc`)} | ${v(`hist${i}_author`)} |\n`;
+  }
+  md += `\n`;
+
+  // 02. 개요
+  md += `## 02. 개요 (Executive Summary)\n\n`;
+  md += `${v('summary') || '-'}\n\n`;
+
+  // 03. 배경 및 목적
+  md += `## 03. 배경 및 목적\n\n`;
+  md += `### 3-1. 사업 환경\n${v('env') || '-'}\n\n`;
+  md += `### 3-2. 문제 정의\n${v('problem_detail') || '-'}\n\n`;
+  md += `### 3-3. SMART 목표\n\n`;
+  md += `| 구분 | 내용 |\n|------|------|\n`;
+  md += `| **S**pecific | ${v('smart_s')} |\n`;
+  md += `| **M**easurable | ${v('smart_m')} |\n`;
+  md += `| **A**chievable | ${v('smart_a')} |\n`;
+  md += `| **R**elevant | ${v('smart_r')} |\n`;
+  md += `| **T**ime-bound | ${v('smart_t')} |\n\n`;
+  md += `### 3-4. In Scope / Out of Scope\n\n`;
+  md += `**In Scope:**\n${v('in_scope') || '-'}\n\n`;
+  md += `**Out of Scope:**\n${v('out_scope') || '-'}\n\n`;
+
+  // 04. 대상 사용자 & 페르소나
+  md += `## 04. 대상 사용자 & 페르소나\n\n`;
+  md += `### 4-1. 사용자 세그먼트\n\n`;
+  md += `| 구분 | 사용자 유형 | 주요 업무 | 핵심 니즈 |\n|------|-----------|---------|----------|\n`;
+  md += `| Primary | ${v('user_pri_type')} | ${v('user_pri_task')} | ${v('user_pri_need')} |\n`;
+  md += `| Secondary | ${v('user_sec_type')} | ${v('user_sec_task')} | ${v('user_sec_need')} |\n\n`;
+  md += `### 4-2. 페르소나\n\n`;
+  for (let i = 1; i <= 2; i++) {
+    md += `**페르소나 ${i}**\n`;
+    md += `- 이름/역할: ${v(`p${i}_name`)}\n`;
+    md += `- 주요 업무: ${v(`p${i}_task`)}\n`;
+    md += `- Pain Point: ${v(`p${i}_pain`)}\n`;
+    md += `- 목표: ${v(`p${i}_goal`)}\n\n`;
+  }
+
+  // 05. 사용자 시나리오
+  md += `## 05. 사용자 시나리오\n\n`;
+  md += `### 5-1. Given-When-Then 시나리오\n\n`;
+  for (let i = 1; i <= 3; i++) {
+    const given = v(`sc${i}_given`);
+    if (given) {
+      md += `**시나리오 ${i}**\n`;
+      md += `- **Given:** ${given}\n`;
+      md += `- **When:** ${v(`sc${i}_when`)}\n`;
+      md += `- **Then:** ${v(`sc${i}_then`)}\n\n`;
+    }
+  }
+  md += `### 5-2. 유저 저니 맵\n\n`;
+  md += `| 단계 | 인지 | 접근 | 사용 | 결과 확인 | 재사용 |\n|------|------|------|------|---------|-------|\n`;
+  md += `| 행동 | ${v('journey_act1')} | ${v('journey_act2')} | ${v('journey_act3')} | ${v('journey_act4')} | ${v('journey_act5')} |\n`;
+  md += `| 감정 | ${v('journey_feel1')} | ${v('journey_feel2')} | ${v('journey_feel3')} | ${v('journey_feel4')} | ${v('journey_feel5')} |\n`;
+  md += `| Pain Point | ${v('journey_pain1')} | ${v('journey_pain2')} | ${v('journey_pain3')} | ${v('journey_pain4')} | ${v('journey_pain5')} |\n\n`;
+
+  // 06. AS-IS / TO-BE
+  md += `## 06. AS-IS / TO-BE\n\n`;
+  md += `### 6-1. 현행 프로세스 (AS-IS)\n\n`;
+  for (let i = 1; i <= 4; i++) {
+    const step = v(`asis_step${i}`);
+    if (step) md += `${i}. ${step}\n`;
+  }
+  md += `\n### 6-2. 개선 비교\n\n`;
+  md += `| 비교 항목 | AS-IS | TO-BE | 개선 효과 |\n|---------|-------|-------|----------|\n`;
+  md += `| 소요시간 | ${v('cmp_time_as')} | ${v('cmp_time_to')} | ${v('cmp_time_eff')} |\n`;
+  md += `| 처리량 | ${v('cmp_vol_as')} | ${v('cmp_vol_to')} | ${v('cmp_vol_eff')} |\n`;
+  md += `| 정확도 | ${v('cmp_acc_as')} | ${v('cmp_acc_to')} | ${v('cmp_acc_eff')} |\n`;
+  md += `| 비용 | ${v('cmp_cost_as')} | ${v('cmp_cost_to')} | ${v('cmp_cost_eff')} |\n\n`;
+
+  // 07. 기능 요구사항
+  md += `## 07. 기능 요구사항\n\n`;
+  md += `### 7-1. 기능 목록 (MoSCoW)\n\n`;
+  md += `| ID | 기능명 | 설명 | 우선순위 |\n|----|-------|------|--------|\n`;
+  for (let i = 1; i <= 5; i++) {
+    const name = v(`df${i}_name`);
+    if (name) md += `| F-0${i} | ${name} | ${v(`df${i}_desc`)} | ${v(`df${i}_priority`)} |\n`;
+  }
+  md += `\n### 7-2. 기능 상세 (I/P/O)\n\n`;
+  for (let i = 1; i <= 2; i++) {
+    const name = v(`df${i}_name`);
+    if (name) {
+      md += `**F-0${i} ${name}**\n`;
+      md += `- Input: ${v(`df${i}_input`)}\n`;
+      md += `- Process: ${v(`df${i}_process`)}\n`;
+      md += `- Output: ${v(`df${i}_output`)}\n`;
+      md += `- 비즈니스 규칙: ${v(`df${i}_rule`)}\n\n`;
+    }
+  }
+
+  // 08. 화면 설계
+  md += `## 08. 화면 설계 (Wireframe Sketch)\n\n`;
+  md += `### 메인 화면\n\`\`\`\n${v('sketch_main') || '-'}\n\`\`\`\n\n`;
+  md += `### 제안서 생성 화면\n\`\`\`\n${v('sketch_detail') || '-'}\n\`\`\`\n\n`;
+
+  // 09. 데이터 & 기술 구조
+  md += `## 09. 데이터 & 기술 구조\n\n`;
+  md += `### 9-1. 기술 스택\n\n`;
+  md += `| 구분 | 기술/도구 |\n|------|----------|\n`;
+  md += `| Frontend | ${v('tech_front')} |\n`;
+  md += `| Backend | ${v('tech_back')} |\n`;
+  md += `| AI/ML | ${v('tech_ai')} |\n`;
+  md += `| Database | ${v('tech_db')} |\n`;
+  md += `| Infra | ${v('tech_infra')} |\n\n`;
+  md += `### 9-2. 시스템 구성도\n\`\`\`\n${v('sketch_architecture') || '-'}\n\`\`\`\n\n`;
+  md += `### 9-3. 외부 연동\n${v('external_api') || '-'}\n\n`;
+
+  // 10. 비기능 요구사항
+  md += `## 10. 비기능 요구사항\n\n`;
+  md += `| 항목 | 요구사항 |\n|------|--------|\n`;
+  md += `| 응답 속도 | ${v('nfr_speed')} |\n`;
+  md += `| 동시 접속 | ${v('nfr_concurrent')} |\n`;
+  md += `| 가용성 | ${v('nfr_uptime')} |\n`;
+  md += `| 보안 | ${v('nfr_security')} |\n`;
+  md += `| 규제 준수 | ${v('nfr_regulation')} |\n`;
+  md += `| 접근성 | ${v('nfr_access')} |\n\n`;
+
+  // 11. 일정
+  md += `## 11. 일정 (Roadmap)\n\n`;
+  md += `| Phase | 기간 | 주요 산출물 | 마일스톤 |\n|-------|------|----------|--------|\n`;
+  for (let i = 1; i <= 3; i++) {
+    md += `| ${i} | ${v(`phase${i}_period`)} | ${v(`phase${i}_output`)} | ${v(`phase${i}_milestone`)} |\n`;
+  }
+  md += `\n`;
+
+  // 12. 성공 지표
+  md += `## 12. 성공 지표 (KPI)\n\n`;
+  md += `### 12-1. 정량 지표\n\n`;
+  md += `| KPI | 현재값 | 목표값 | 측정 방법 |\n|-----|-------|-------|----------|\n`;
+  for (let i = 1; i <= 3; i++) {
+    const name = v(`kpi${i}_name`);
+    if (name) md += `| ${name} | ${v(`kpi${i}_current`)} | ${v(`kpi${i}_target`)} | ${v(`kpi${i}_method`)} |\n`;
+  }
+  md += `\n### 12-2. 정성 지표\n${v('qualitative') || '-'}\n\n`;
+
+  // 13. 리스크
+  md += `## 13. 리스크\n\n`;
+  md += `| 리스크 | 영향도 | 확률 | 대응 방안 |\n|--------|-------|------|----------|\n`;
+  for (let i = 1; i <= 3; i++) {
+    const r = v(`risk${i}`);
+    if (r) md += `| ${r} | ${v(`risk${i}_impact`)} | ${v(`risk${i}_prob`)} | ${v(`risk${i}_response`)} |\n`;
+  }
+
+  // 파일 다운로드
+  const project = v('meta_project') || 'PRD';
+  const author = v('meta_author');
+  const filename = `PRD_상세_${project}${author ? '_' + author : ''}.md`;
+  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ════════════════════════════════════════════
+// 표지 프로젝트명 동기화
+// ════════════════════════════════════════════
+function syncCoverTitle() {
+  const project = document.getElementById('meta_project').value.trim();
+  document.getElementById('coverProjectName').textContent = project || 'AI 업무 효율화 프로젝트';
+}
+
+document.getElementById('meta_project').addEventListener('input', syncCoverTitle);
+
+// ════════════════════════════════════════════
+// 사이드바 목차 활성 상태 (스크롤 추적)
+// ════════════════════════════════════════════
+function updateTocActive() {
+  const sections = document.querySelectorAll('.section-wrap');
+  const links = document.querySelectorAll('.toc a');
+  let current = '';
+
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= 120) current = sec.id;
+  });
+
+  links.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+}
+
+window.addEventListener('scroll', updateTocActive);
+
+// ════════════════════════════════════════════
+// 자동 로컬 저장 (30초마다)
+// ════════════════════════════════════════════
+setInterval(() => {
+  const author = document.getElementById('meta_author').value.trim();
+  if (author) {
+    const data = collectData('auto');
+    localStorage.setItem('prd_detailed_data', JSON.stringify(data));
+    showStatus('자동 저장됨 (' + new Date().toLocaleTimeString() + ')', 'saved');
+  }
+}, 30000);
+
+// 페이지 로드 시 로컬 데이터 복원
+window.addEventListener('DOMContentLoaded', loadLocal);
+
+// 페이지 떠날 때 경고
+window.addEventListener('beforeunload', (e) => {
+  const author = document.getElementById('meta_author').value.trim();
+  if (author) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+</script>
+
+</body>
+</html>

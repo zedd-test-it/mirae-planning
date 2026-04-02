@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD 피드백 양식</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    padding: 20px 20px 100px;
+    color: #222;
+  }
+
+  .page {
+    width: 210mm;
+    background: #fff;
+    padding: 36px 40px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.1);
+  }
+
+  /* 문서 헤더 */
+  .doc-header {
+    border-bottom: 2px solid #222;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+
+  .doc-header h1 { font-size: 20px; font-weight: 700; }
+  .doc-header .sub { font-size: 11px; color: #888; margin-top: 2px; }
+
+  /* 메타 정보 */
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    font-size: 11px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .meta-item label {
+    display: block;
+    font-size: 9px;
+    color: #888;
+    margin-bottom: 2px;
+  }
+
+  .meta-item input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 3px 0;
+    font-size: 11px;
+    font-family: inherit;
+    outline: none;
+    background: transparent;
+  }
+
+  .meta-item input:focus { border-bottom-color: #222; }
+
+  /* 섹션 */
+  .section { margin-bottom: 16px; }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 0;
+    border-bottom: 1px solid #222;
+    margin-bottom: 8px;
+  }
+
+  .section-title span { font-weight: 400; color: #888; font-size: 10px; margin-left: 6px; }
+
+  /* 입력 필드 */
+  input[type="text"], textarea {
+    font-family: inherit;
+    font-size: 11px;
+    color: #222;
+    border: 1px solid #ddd;
+    padding: 6px 8px;
+    background: #fafafa;
+    outline: none;
+    width: 100%;
+    resize: vertical;
+  }
+
+  input[type="text"]:focus, textarea:focus {
+    border-color: #888;
+    background: #fff;
+  }
+
+  textarea { min-height: 40px; line-height: 1.6; }
+  textarea.sm { min-height: 28px; }
+  textarea.lg { min-height: 56px; }
+
+  /* 테이블 */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+    text-align: left;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    font-size: 10px;
+    color: #444;
+  }
+
+  td {
+    padding: 4px 6px;
+    border: 1px solid #ddd;
+    vertical-align: top;
+  }
+
+  td input, td textarea {
+    border: none;
+    background: transparent;
+    padding: 2px 0;
+  }
+
+  td input:focus, td textarea:focus { background: #f8f8ff; }
+
+  th.c, td.c { text-align: center; }
+
+  /* 점수 입력 (라디오) */
+  .score-group {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .score-radio { display: none; }
+
+  .score-label {
+    width: 26px;
+    height: 26px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    color: #888;
+    transition: all 0.15s;
+  }
+
+  .score-radio:checked + .score-label {
+    background: #222;
+    color: #fff;
+    border-color: #222;
+  }
+
+  .score-label:hover { border-color: #666; }
+
+  /* 종합 점수 바 */
+  .total-bar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 16px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    margin-bottom: 16px;
+  }
+
+  .total-score {
+    font-size: 28px;
+    font-weight: 700;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .total-score .max {
+    font-size: 11px;
+    font-weight: 400;
+    color: #888;
+  }
+
+  .total-grade {
+    font-size: 16px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border: 2px solid #222;
+  }
+
+  .total-legend {
+    font-size: 10px;
+    color: #888;
+    margin-left: auto;
+    line-height: 1.7;
+  }
+
+  /* 정성 평가 리스트 */
+  .fb-list { list-style: none; }
+
+  .fb-list li {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    align-items: flex-start;
+  }
+
+  .fb-list .num {
+    min-width: 18px;
+    font-weight: 600;
+    font-size: 11px;
+    color: #444;
+    padding-top: 6px;
+  }
+
+  .fb-list textarea {
+    flex: 1;
+    min-height: 28px;
+  }
+
+  /* 판정 */
+  .verdict-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .verdict-radio { display: none; }
+
+  .verdict-opt {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.15s;
+  }
+
+  .verdict-opt:hover { border-color: #222; }
+
+  .verdict-radio:checked + .verdict-opt {
+    background: #222;
+    color: #fff;
+    border-color: #222;
+  }
+
+  .verdict-radio:checked + .verdict-opt .v-desc {
+    color: #ccc;
+  }
+
+  .verdict-opt .v-label {
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .verdict-opt .v-desc {
+    font-size: 9px;
+    color: #888;
+  }
+
+  /* 서명 */
+  .sig {
+    display: flex;
+    justify-content: flex-end;
+    gap: 40px;
+    margin-top: 16px;
+  }
+
+  .sig-box {
+    text-align: center;
+    font-size: 10px;
+    color: #888;
+  }
+
+  .sig-line {
+    width: 100px;
+    border-top: 1px solid #222;
+    margin-top: 28px;
+    padding-top: 4px;
+  }
+
+  /* 푸터 */
+  .doc-footer {
+    margin-top: 16px;
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 9px;
+    color: #aaa;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* 하단 고정 바 */
+  .action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    z-index: 200;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+  }
+
+  .action-bar .status {
+    font-size: 11px;
+    color: #888;
+    margin-right: auto;
+  }
+
+  .action-bar .status.saving { color: #b8860b; }
+  .action-bar .status.saved { color: #28a745; }
+  .action-bar .status.error { color: #dc3545; }
+
+  .btn {
+    padding: 8px 24px;
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: 600;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn:hover { background: #f5f5f5; }
+
+  .btn-draft {
+    border-color: #888;
+    color: #444;
+  }
+
+  .btn-submit {
+    background: #222;
+    color: #fff;
+    border-color: #222;
+  }
+
+  .btn-submit:hover { background: #444; }
+
+  .btn-pdf {
+    border-color: #555;
+    color: #333;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* 알림 */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #222;
+    color: #fff;
+    padding: 12px 20px;
+    font-size: 12px;
+    border-radius: 4px;
+    z-index: 300;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .toast.success { background: #28a745; }
+  .toast.error { background: #dc3545; }
+
+  @media print {
+    .action-bar, .toast { display: none !important; }
+    body { background: white; padding: 0; margin: 0; }
+    .page { box-shadow: none; padding: 24px 30px; width: 100%; }
+
+    input[type="text"], textarea {
+      border: none !important;
+      background: none !important;
+      padding: 2px 0;
+      -webkit-appearance: none;
+      color: #222;
+      font-size: 10px;
+    }
+
+    textarea { min-height: unset; height: auto; overflow: visible; }
+    input::placeholder, textarea::placeholder { color: transparent; }
+
+    .score-label { border: 1px solid #aaa; }
+    td { padding: 3px 6px; }
+  }
+
+  @page { size: A4; margin: 10mm; }
+</style>
+</head>
+<body>
+
+<!-- 알림 -->
+<div class="toast" id="toast"></div>
+
+<div class="page">
+  <div class="doc-header">
+    <h1>PRD 피드백 양식</h1>
+    <div class="sub">Product Requirements Document — Review & Feedback</div>
+  </div>
+
+  <!-- 메타 정보 -->
+  <div class="meta-row">
+    <div class="meta-item">
+      <label>기획안명 *</label>
+      <input type="text" id="plan_name" placeholder="예) AI 포트폴리오 리밸런싱 어시스턴트" required>
+    </div>
+    <div class="meta-item">
+      <label>검토일</label>
+      <input type="text" id="meta_date" placeholder="2026. . .">
+    </div>
+    <div class="meta-item">
+      <label>작성자 (기획안 원작성자)</label>
+      <input type="text" id="plan_author" placeholder="예) 홍길동">
+    </div>
+    <div class="meta-item">
+      <label>검토자 (피드백 작성자) *</label>
+      <input type="text" id="meta_author" placeholder="예) 김검토" required>
+    </div>
+  </div>
+
+  <!-- A. 항목별 평가 -->
+  <div class="section">
+    <div class="section-title">A. 항목별 평가</div>
+    <div style="font-size:9px;color:#999;margin-bottom:8px;">1 부족 · 2 미흡 · 3 보통 · 4 우수 · 5 탁월</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:24px;">#</th>
+          <th style="width:110px;">평가 항목</th>
+          <th style="width:200px;">평가 기준</th>
+          <th style="width:160px;" class="c">점수</th>
+          <th>코멘트</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="c">1</td>
+          <td><strong>문제 정의</strong></td>
+          <td style="font-size:10px;color:#888;">문제가 구체적이고 정량 근거가 있는가</td>
+          <td><div class="score-group">
+            <input type="radio" name="q1" value="1" class="score-radio" id="q1_1"><label for="q1_1" class="score-label">1</label>
+            <input type="radio" name="q1" value="2" class="score-radio" id="q1_2"><label for="q1_2" class="score-label">2</label>
+            <input type="radio" name="q1" value="3" class="score-radio" id="q1_3"><label for="q1_3" class="score-label">3</label>
+            <input type="radio" name="q1" value="4" class="score-radio" id="q1_4"><label for="q1_4" class="score-label">4</label>
+            <input type="radio" name="q1" value="5" class="score-radio" id="q1_5"><label for="q1_5" class="score-label">5</label>
+          </div></td>
+          <td><textarea id="comment_1" class="sm" placeholder="코멘트"></textarea></td>
+        </tr>
+        <tr>
+          <td class="c">2</td>
+          <td><strong>AI 활용 적합성</strong></td>
+          <td style="font-size:10px;color:#888;">AI가 적합한 수단인가</td>
+          <td><div class="score-group">
+            <input type="radio" name="q2" value="1" class="score-radio" id="q2_1"><label for="q2_1" class="score-label">1</label>
+            <input type="radio" name="q2" value="2" class="score-radio" id="q2_2"><label for="q2_2" class="score-label">2</label>
+            <input type="radio" name="q2" value="3" class="score-radio" id="q2_3"><label for="q2_3" class="score-label">3</label>
+            <input type="radio" name="q2" value="4" class="score-radio" id="q2_4"><label for="q2_4" class="score-label">4</label>
+            <input type="radio" name="q2" value="5" class="score-radio" id="q2_5"><label for="q2_5" class="score-label">5</label>
+          </div></td>
+          <td><textarea id="comment_2" class="sm" placeholder="코멘트"></textarea></td>
+        </tr>
+        <tr>
+          <td class="c">3</td>
+          <td><strong>사용자 중심 설계</strong></td>
+          <td style="font-size:10px;color:#888;">페르소나/시나리오가 현실적인가</td>
+          <td><div class="score-group">
+            <input type="radio" name="q3" value="1" class="score-radio" id="q3_1"><label for="q3_1" class="score-label">1</label>
+            <input type="radio" name="q3" value="2" class="score-radio" id="q3_2"><label for="q3_2" class="score-label">2</label>
+            <input type="radio" name="q3" value="3" class="score-radio" id="q3_3"><label for="q3_3" class="score-label">3</label>
+            <input type="radio" name="q3" value="4" class="score-radio" id="q3_4"><label for="q3_4" class="score-label">4</label>
+            <input type="radio" name="q3" value="5" class="score-radio" id="q3_5"><label for="q3_5" class="score-label">5</label>
+          </div></td>
+          <td><textarea id="comment_3" class="sm" placeholder="코멘트"></textarea></td>
+        </tr>
+        <tr>
+          <td class="c">4</td>
+          <td><strong>기능 요구사항</strong></td>
+          <td style="font-size:10px;color:#888;">기능 정의가 구체적이고 우선순위 합리적인가</td>
+          <td><div class="score-group">
+            <input type="radio" name="q4" value="1" class="score-radio" id="q4_1"><label for="q4_1" class="score-label">1</label>
+            <input type="radio" name="q4" value="2" class="score-radio" id="q4_2"><label for="q4_2" class="score-label">2</label>
+            <input type="radio" name="q4" value="3" class="score-radio" id="q4_3"><label for="q4_3" class="score-label">3</label>
+            <input type="radio" name="q4" value="4" class="score-radio" id="q4_4"><label for="q4_4" class="score-label">4</label>
+            <input type="radio" name="q4" value="5" class="score-radio" id="q4_5"><label for="q4_5" class="score-label">5</label>
+          </div></td>
+          <td><textarea id="comment_4" class="sm" placeholder="코멘트"></textarea></td>
+        </tr>
+        <tr>
+          <td class="c">5</td>
+          <td><strong>실행 가능성</strong></td>
+          <td style="font-size:10px;color:#888;">기술/조직적으로 실현 가능한가</td>
+          <td><div class="score-group">
+            <input type="radio" name="q5" value="1" class="score-radio" id="q5_1"><label for="q5_1" class="score-label">1</label>
+            <input type="radio" name="q5" value="2" class="score-radio" id="q5_2"><label for="q5_2" class="score-label">2</label>
+            <input type="radio" name="q5" value="3" class="score-radio" id="q5_3"><label for="q5_3" class="score-label">3</label>
+            <input type="radio" name="q5" value="4" class="score-radio" id="q5_4"><label for="q5_4" class="score-label">4</label>
+            <input type="radio" name="q5" value="5" class="score-radio" id="q5_5"><label for="q5_5" class="score-label">5</label>
+          </div></td>
+          <td><textarea id="comment_5" class="sm" placeholder="코멘트"></textarea></td>
+        </tr>
+        <tr>
+          <td class="c">6</td>
+          <td><strong>성공 지표</strong></td>
+          <td style="font-size:10px;color:#888;">KPI가 측정 가능하고 현실적인가</td>
+          <td><div class="score-group">
+            <input type="radio" name="q6" value="1" class="score-radio" id="q6_1"><label for="q6_1" class="score-label">1</label>
+            <input type="radio" name="q6" value="2" class="score-radio" id="q6_2"><label for="q6_2" class="score-label">2</label>
+            <input type="radio" name="q6" value="3" class="score-radio" id="q6_3"><label for="q6_3" class="score-label">3</label>
+            <input type="radio" name="q6" value="4" class="score-radio" id="q6_4"><label for="q6_4" class="score-label">4</label>
+            <input type="radio" name="q6" value="5" class="score-radio" id="q6_5"><label for="q6_5" class="score-label">5</label>
+          </div></td>
+          <td><textarea id="comment_6" class="sm" placeholder="코멘트"></textarea></td>
+        </tr>
+        <tr>
+          <td class="c">7</td>
+          <td><strong>리스크 관리</strong></td>
+          <td style="font-size:10px;color:#888;">리스크 식별 및 대응 방안이 있는가</td>
+          <td><div class="score-group">
+            <input type="radio" name="q7" value="1" class="score-radio" id="q7_1"><label for="q7_1" class="score-label">1</label>
+            <input type="radio" name="q7" value="2" class="score-radio" id="q7_2"><label for="q7_2" class="score-label">2</label>
+            <input type="radio" name="q7" value="3" class="score-radio" id="q7_3"><label for="q7_3" class="score-label">3</label>
+            <input type="radio" name="q7" value="4" class="score-radio" id="q7_4"><label for="q7_4" class="score-label">4</label>
+            <input type="radio" name="q7" value="5" class="score-radio" id="q7_5"><label for="q7_5" class="score-label">5</label>
+          </div></td>
+          <td><textarea id="comment_7" class="sm" placeholder="코멘트"></textarea></td>
+        </tr>
+        <tr>
+          <td class="c">8</td>
+          <td><strong>문서 완성도</strong></td>
+          <td style="font-size:10px;color:#888;">논리 흐름, 가독성, 시각자료 활용</td>
+          <td><div class="score-group">
+            <input type="radio" name="q8" value="1" class="score-radio" id="q8_1"><label for="q8_1" class="score-label">1</label>
+            <input type="radio" name="q8" value="2" class="score-radio" id="q8_2"><label for="q8_2" class="score-label">2</label>
+            <input type="radio" name="q8" value="3" class="score-radio" id="q8_3"><label for="q8_3" class="score-label">3</label>
+            <input type="radio" name="q8" value="4" class="score-radio" id="q8_4"><label for="q8_4" class="score-label">4</label>
+            <input type="radio" name="q8" value="5" class="score-radio" id="q8_5"><label for="q8_5" class="score-label">5</label>
+          </div></td>
+          <td><textarea id="comment_8" class="sm" placeholder="코멘트"></textarea></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 종합 점수 바 -->
+  <div class="total-bar">
+    <div class="total-score"><span id="totalScore">__</span><div class="max">/ 40</div></div>
+    <div class="total-grade" id="gradeBadge">—</div>
+    <div class="total-legend">
+      S (36~40) 바로 실행&nbsp;&nbsp;A (28~35) 보완 후 실행&nbsp;&nbsp;B (20~27) 재검토&nbsp;&nbsp;C (~19) 재기획
+    </div>
+  </div>
+
+  <!-- B. 정성 평가 -->
+  <div class="section">
+    <div class="section-title">B. 정성 평가</div>
+
+    <div style="font-size:11px;font-weight:600;margin-bottom:6px;">강점 Top 3</div>
+    <ol class="fb-list">
+      <li><span class="num">1.</span><textarea id="strength_1" class="sm" placeholder="강점을 입력하세요"></textarea></li>
+      <li><span class="num">2.</span><textarea id="strength_2" class="sm" placeholder="강점을 입력하세요"></textarea></li>
+      <li><span class="num">3.</span><textarea id="strength_3" class="sm" placeholder="강점을 입력하세요"></textarea></li>
+    </ol>
+
+    <div style="font-size:11px;font-weight:600;margin:12px 0 6px;">개선 필요 사항 Top 3</div>
+    <ol class="fb-list">
+      <li><span class="num">1.</span><textarea id="improve_1" class="sm" placeholder="개선점을 입력하세요"></textarea></li>
+      <li><span class="num">2.</span><textarea id="improve_2" class="sm" placeholder="개선점을 입력하세요"></textarea></li>
+      <li><span class="num">3.</span><textarea id="improve_3" class="sm" placeholder="개선점을 입력하세요"></textarea></li>
+    </ol>
+
+    <div style="font-size:11px;font-weight:600;margin:12px 0 6px;">총평</div>
+    <textarea id="overall" class="lg" placeholder="전반적인 평가 의견을 작성하세요"></textarea>
+  </div>
+
+  <!-- C. 실행 판정 -->
+  <div class="section">
+    <div class="section-title">C. 실행 판정</div>
+    <div class="verdict-row">
+      <input type="radio" name="verdict" value="GO" class="verdict-radio" id="v_go">
+      <label for="v_go" class="verdict-opt">
+        <div class="v-label">GO</div>
+        <div class="v-desc">바로 실행 가능</div>
+      </label>
+      <input type="radio" name="verdict" value="CONDITIONAL GO" class="verdict-radio" id="v_cond">
+      <label for="v_cond" class="verdict-opt">
+        <div class="v-label">CONDITIONAL GO</div>
+        <div class="v-desc">조건부 실행</div>
+      </label>
+      <input type="radio" name="verdict" value="NO-GO" class="verdict-radio" id="v_nogo">
+      <label for="v_nogo" class="verdict-opt">
+        <div class="v-label">NO-GO</div>
+        <div class="v-desc">재기획 필요</div>
+      </label>
+    </div>
+    <div style="font-size:10px;font-weight:600;color:#666;margin-bottom:4px;">조건 또는 사유</div>
+    <textarea id="verdict_reason" class="lg" placeholder="판정 사유를 작성하세요"></textarea>
+  </div>
+
+  <!-- D. 액션 아이템 -->
+  <div class="section">
+    <div class="section-title">D. 액션 아이템</div>
+    <table>
+      <tr>
+        <th style="width:28px;">#</th>
+        <th>액션 아이템</th>
+        <th style="width:100px;">담당</th>
+        <th style="width:100px;">기한</th>
+      </tr>
+      <tr>
+        <td class="c">1</td>
+        <td><input type="text" id="action_1" placeholder="액션 아이템"></td>
+        <td><input type="text" id="action_1_who" placeholder="담당자"></td>
+        <td><input type="text" id="action_1_due" placeholder="기한"></td>
+      </tr>
+      <tr>
+        <td class="c">2</td>
+        <td><input type="text" id="action_2" placeholder="액션 아이템"></td>
+        <td><input type="text" id="action_2_who" placeholder="담당자"></td>
+        <td><input type="text" id="action_2_due" placeholder="기한"></td>
+      </tr>
+      <tr>
+        <td class="c">3</td>
+        <td><input type="text" id="action_3" placeholder="액션 아이템"></td>
+        <td><input type="text" id="action_3_who" placeholder="담당자"></td>
+        <td><input type="text" id="action_3_due" placeholder="기한"></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 서명란 -->
+  <div class="sig">
+    <div class="sig-box"><div class="sig-line">검토자 서명 / 날짜</div></div>
+  </div>
+
+  <div class="doc-footer">
+    <span>미래에셋증권 AI 실무 교육</span>
+    <span>Confidential</span>
+  </div>
+</div>
+
+<!-- 하단 액션 바 -->
+<div class="action-bar">
+  <div class="status" id="statusText">미저장</div>
+  <button class="btn btn-draft" onclick="resetForm()">초기화</button>
+  <button class="btn btn-draft" onclick="saveLocal()">로컬 임시저장</button>
+  <button class="btn btn-draft" onclick="submitToSheet('draft')">시트 임시저장</button>
+  <button class="btn btn-pdf" onclick="downloadPDF()">PDF 다운로드</button>
+  <button class="btn btn-pdf" onclick="downloadMD()">MD 다운로드</button>
+  <button class="btn btn-submit" style="margin-left:auto;" onclick="submitToSheet('submit')">제출</button>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// 설정
+// ════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxW7k6CoNcs50-0lFQfkykNE27g3ZA27dJTQLPZvSwhh3Si_TXXCvhAacPUlkKQLw/exec';
+const STORAGE_KEY = 'prd_feedback_data';
+
+// ════════════════════════════════════════════
+// 필드 ID 목록
+// ════════════════════════════════════════════
+const META_IDS = ['plan_name', 'meta_date', 'plan_author', 'meta_author'];
+
+const TEXT_FIELD_IDS = [
+  'comment_1', 'comment_2', 'comment_3', 'comment_4',
+  'comment_5', 'comment_6', 'comment_7', 'comment_8',
+  'strength_1', 'strength_2', 'strength_3',
+  'improve_1', 'improve_2', 'improve_3',
+  'overall', 'verdict_reason',
+  'action_1', 'action_1_who', 'action_1_due',
+  'action_2', 'action_2_who', 'action_2_due',
+  'action_3', 'action_3_who', 'action_3_due',
+];
+
+// ════════════════════════════════════════════
+// 점수 자동 합산 + 등급 산출
+// ════════════════════════════════════════════
+function calcScore() {
+  let total = 0, count = 0;
+  for (let i = 1; i <= 8; i++) {
+    const checked = document.querySelector(`input[name="q${i}"]:checked`);
+    if (checked) { total += +checked.value; count++; }
+  }
+  document.getElementById('totalScore').textContent = total || '__';
+  if (count === 8) {
+    const grade = total >= 36 ? 'S' : total >= 28 ? 'A' : total >= 20 ? 'B' : 'C';
+    document.getElementById('gradeBadge').textContent = grade;
+  } else {
+    document.getElementById('gradeBadge').textContent = '—';
+  }
+}
+
+document.querySelectorAll('.score-radio').forEach(r => r.addEventListener('change', calcScore));
+
+// ════════════════════════════════════════════
+// 데이터 수집
+// ════════════════════════════════════════════
+function collectData(action) {
+  const fields = {};
+
+  // 점수 (score_1 ~ score_8)
+  for (let i = 1; i <= 8; i++) {
+    const checked = document.querySelector(`input[name="q${i}"]:checked`);
+    fields[`score_${i}`] = checked ? checked.value : '';
+  }
+
+  // 텍스트 필드
+  TEXT_FIELD_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) fields[id] = el.value;
+  });
+
+  // 종합 점수 + 등급
+  let total = 0;
+  for (let i = 1; i <= 8; i++) {
+    if (fields[`score_${i}`]) total += +fields[`score_${i}`];
+  }
+  fields.total_score = total || '';
+  fields.grade = total >= 36 ? 'S' : total >= 28 ? 'A' : total >= 20 ? 'B' : total > 0 ? 'C' : '';
+
+  // 판정
+  const verdict = document.querySelector('input[name="verdict"]:checked');
+  fields.verdict = verdict ? verdict.value : '';
+
+  // 기획안명 (findExistingRow에서 사용)
+  fields.plan_name = document.getElementById('plan_name').value;
+  fields.plan_author = document.getElementById('plan_author').value;
+
+  return {
+    action: action,
+    type: 'feedback',
+    meta_author: document.getElementById('meta_author').value,
+    meta_date: document.getElementById('meta_date').value,
+    meta_plan_name: document.getElementById('plan_name').value,
+    fields: fields,
+  };
+}
+
+// ════════════════════════════════════════════
+// 로컬 임시저장 (localStorage)
+// ════════════════════════════════════════════
+function saveLocal() {
+  const data = collectData('local');
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  showStatus('로컬 임시저장 완료', 'saved');
+  showToast('로컬에 임시저장되었습니다.', 'success');
+}
+
+function loadLocal() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return;
+
+  try {
+    const data = JSON.parse(saved);
+
+    // 메타 복원
+    if (data.meta_author) document.getElementById('meta_author').value = data.meta_author;
+    if (data.meta_date) document.getElementById('meta_date').value = data.meta_date;
+    if (data.meta_plan_name) document.getElementById('plan_name').value = data.meta_plan_name;
+
+    const f = data.fields || {};
+
+    // 기획안 작성자 복원
+    if (f.plan_author) document.getElementById('plan_author').value = f.plan_author;
+
+    // 점수 복원
+    for (let i = 1; i <= 8; i++) {
+      const val = f[`score_${i}`];
+      if (val) {
+        const radio = document.querySelector(`input[name="q${i}"][value="${val}"]`);
+        if (radio) radio.checked = true;
+      }
+    }
+
+    // 텍스트 필드 복원
+    TEXT_FIELD_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && f[id]) el.value = f[id];
+    });
+
+    // 판정 복원
+    if (f.verdict) {
+      const radio = document.querySelector(`input[name="verdict"][value="${f.verdict}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    // 점수 재계산
+    calcScore();
+
+    showStatus('로컬 데이터 불러옴', 'saved');
+  } catch (e) {
+    console.error('로컬 데이터 복원 실패:', e);
+  }
+}
+
+// ════════════════════════════════════════════
+// 초기화
+// ════════════════════════════════════════════
+function resetForm() {
+  if (!confirm('모든 입력 내용을 초기화하시겠습니까?')) return;
+
+  // 메타 초기화
+  META_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  // 텍스트 필드 초기화
+  TEXT_FIELD_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  // 라디오 초기화
+  document.querySelectorAll('.score-radio, .verdict-radio').forEach(r => r.checked = false);
+
+  // 점수 초기화
+  document.getElementById('totalScore').textContent = '__';
+  document.getElementById('gradeBadge').textContent = '—';
+
+  // localStorage 삭제
+  localStorage.removeItem(STORAGE_KEY);
+
+  showStatus('초기화 완료', '');
+  showToast('모든 입력이 초기화되었습니다.', 'success');
+}
+
+// ════════════════════════════════════════════
+// 구글 시트 전송
+// ════════════════════════════════════════════
+async function submitToSheet(action) {
+  const author = document.getElementById('meta_author').value.trim();
+  const planName = document.getElementById('plan_name').value.trim();
+
+  if (!author || !planName) {
+    showToast('기획안명과 검토자를 입력해주세요.', 'error');
+    return;
+  }
+
+  const label = action === 'draft' ? '임시저장' : '제출';
+
+  if (action === 'submit') {
+    if (!confirm('피드백을 최종 제출하시겠습니까?\n제출 후에도 다시 제출하면 덮어씁니다.')) return;
+  }
+
+  showStatus(`${label} 중...`, 'saving');
+  const buttons = document.querySelectorAll('.btn');
+  buttons.forEach(b => b.disabled = true);
+
+  try {
+    const data = collectData(action);
+
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (result.status === 'success') {
+      showStatus(`${label} 완료 (${new Date().toLocaleTimeString()})`, 'saved');
+      showToast(result.message, 'success');
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    showStatus('전송 실패', 'error');
+    showToast('전송 실패: ' + err.message, 'error');
+    console.error(err);
+  } finally {
+    buttons.forEach(b => b.disabled = false);
+  }
+}
+
+// ════════════════════════════════════════════
+// UI 유틸
+// ════════════════════════════════════════════
+function showStatus(msg, type) {
+  const el = document.getElementById('statusText');
+  el.textContent = msg;
+  el.className = 'status ' + (type || '');
+}
+
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + (type || '');
+  setTimeout(() => { el.className = 'toast'; }, 3000);
+}
+
+// ════════════════════════════════════════════
+// PDF 다운로드
+// ════════════════════════════════════════════
+function downloadPDF() {
+  const planName = document.getElementById('plan_name').value.trim() || 'PRD';
+  const reviewer = document.getElementById('meta_author').value.trim() || '';
+
+  const origTitle = document.title;
+  document.title = `피드백_${planName}${reviewer ? '_' + reviewer : ''}`;
+
+  window.print();
+
+  setTimeout(() => { document.title = origTitle; }, 1000);
+}
+
+// ════════════════════════════════════════════
+// MD 다운로드
+// ════════════════════════════════════════════
+function downloadMD() {
+  const v = id => (document.getElementById(id)?.value || '').trim();
+  const radioVal = name => {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : '-';
+  };
+
+  let md = `# PRD 피드백 양식\n\n`;
+  md += `> Product Requirements Document — Review & Feedback\n\n`;
+
+  // 메타 정보
+  md += `| 항목 | 내용 |\n|------|------|\n`;
+  md += `| 기획안명 | ${v('plan_name')} |\n`;
+  md += `| 검토일 | ${v('meta_date')} |\n`;
+  md += `| 작성자 (원작성자) | ${v('plan_author')} |\n`;
+  md += `| 검토자 | ${v('meta_author')} |\n\n`;
+
+  // A. 항목별 평가
+  const items = [
+    ['문제 정의', '문제가 구체적이고 정량 근거가 있는가'],
+    ['AI 활용 적합성', 'AI가 적합한 수단인가'],
+    ['사용자 중심 설계', '페르소나/시나리오가 현실적인가'],
+    ['기능 요구사항', '기능 정의가 구체적이고 우선순위 합리적인가'],
+    ['실행 가능성', '기술/조직적으로 실현 가능한가'],
+    ['성공 지표', 'KPI가 측정 가능하고 현실적인가'],
+    ['리스크 관리', '리스크 식별 및 대응 방안이 있는가'],
+    ['문서 완성도', '논리 흐름, 가독성, 시각자료 활용']
+  ];
+
+  md += `## A. 항목별 평가\n\n`;
+  md += `> 1 부족 · 2 미흡 · 3 보통 · 4 우수 · 5 탁월\n\n`;
+  md += `| # | 평가 항목 | 평가 기준 | 점수 | 코멘트 |\n|---|---------|---------|------|-------|\n`;
+  let totalScore = 0;
+  items.forEach((item, i) => {
+    const score = radioVal(`q${i + 1}`);
+    if (score !== '-') totalScore += parseInt(score);
+    md += `| ${i + 1} | ${item[0]} | ${item[1]} | ${score} | ${v(`comment_${i + 1}`)} |\n`;
+  });
+  md += `\n`;
+
+  // 종합 점수
+  let grade = '—';
+  if (totalScore >= 36) grade = 'S (바로 실행)';
+  else if (totalScore >= 28) grade = 'A (보완 후 실행)';
+  else if (totalScore >= 20) grade = 'B (재검토)';
+  else if (totalScore > 0) grade = 'C (재기획)';
+  md += `**종합 점수: ${totalScore} / 40 — 등급: ${grade}**\n\n`;
+
+  // B. 정성 평가
+  md += `## B. 정성 평가\n\n`;
+  md += `### 강점 Top 3\n`;
+  for (let i = 1; i <= 3; i++) {
+    const s = v(`strength_${i}`);
+    if (s) md += `${i}. ${s}\n`;
+  }
+  md += `\n### 개선 필요 사항 Top 3\n`;
+  for (let i = 1; i <= 3; i++) {
+    const s = v(`improve_${i}`);
+    if (s) md += `${i}. ${s}\n`;
+  }
+  md += `\n### 총평\n${v('overall') || '-'}\n\n`;
+
+  // C. 실행 판정
+  md += `## C. 실행 판정\n\n`;
+  md += `- **판정:** ${radioVal('verdict')}\n`;
+  md += `- **사유:** ${v('verdict_reason') || '-'}\n\n`;
+
+  // D. 액션 아이템
+  md += `## D. 액션 아이템\n\n`;
+  md += `| # | 액션 아이템 | 담당 | 기한 |\n|---|----------|------|------|\n`;
+  for (let i = 1; i <= 3; i++) {
+    const action = v(`action_${i}`);
+    if (action) md += `| ${i} | ${action} | ${v(`action_${i}_who`)} | ${v(`action_${i}_due`)} |\n`;
+  }
+
+  // 파일 다운로드
+  const planName = v('plan_name') || 'PRD';
+  const reviewer = v('meta_author');
+  const filename = `피드백_${planName}${reviewer ? '_' + reviewer : ''}.md`;
+  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ════════════════════════════════════════════
+// 자동 로컬 저장 (30초마다)
+// ════════════════════════════════════════════
+setInterval(() => {
+  const author = document.getElementById('meta_author').value.trim();
+  if (author) {
+    const data = collectData('auto');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    showStatus('자동 저장됨 (' + new Date().toLocaleTimeString() + ')', 'saved');
+  }
+}, 30000);
+
+// 페이지 로드 시 로컬 데이터 복원
+window.addEventListener('DOMContentLoaded', loadLocal);
+
+// 페이지 떠날 때 경고
+window.addEventListener('beforeunload', (e) => {
+  const author = document.getElementById('meta_author').value.trim();
+  if (author) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+</script>
+
+</body>
+</html>

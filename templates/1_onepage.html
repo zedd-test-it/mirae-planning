@@ -667,131 +667,180 @@ function loadMD(input) {
   const reader = new FileReader();
   reader.onload = function(e) {
     const md = e.target.result;
-    try {
-      parseMD(md);
-      showToast('MD 파일을 불러왔습니다. 내용을 확인하세요.', 'success');
-    } catch (err) {
-      showToast('MD 파싱 실패: ' + err.message, 'error');
-      console.error(err);
+    console.log('[MD 불러오기] 파일 크기:', md.length, '자');
+    const result = parseMD(md);
+    if (result.total === 0) {
+      alert('MD 파일에서 인식 가능한 내용을 찾지 못했습니다.\n\n이 페이지에서 "MD 다운로드"로 저장한 파일을 사용해주세요.');
+    } else {
+      const msgs = [];
+      if (result.meta) msgs.push('기본 정보');
+      if (result.users) msgs.push(`사용자 ${result.users}명`);
+      if (result.features) msgs.push(`기능 ${result.features}개`);
+      if (result.asistobe) msgs.push(`AS-IS/TO-BE ${result.asistobe}개`);
+      if (result.kpis) msgs.push(`KPI ${result.kpis}개`);
+      if (result.phases) msgs.push(`일정 ${result.phases}개`);
+      if (result.risks) msgs.push(`리스크 ${result.risks}개`);
+      if (result.tech) msgs.push('활용 기술');
+      alert('MD 불러오기 완료!\n\n' + msgs.join(', ') + ' 반영됨\n\n내용을 확인하고 필요시 수정하세요.');
     }
   };
   reader.readAsText(file);
 }
 
 function parseMD(md) {
-  // 테이블 행 파싱 유틸
-  const parseTable = (text, headerPattern) => {
-    const idx = text.indexOf(headerPattern);
-    if (idx === -1) return [];
-    const after = text.substring(idx);
-    const lines = after.split('\n');
-    const rows = [];
-    for (let i = 1; i < lines.length; i++) { // skip header
-      const line = lines[i].trim();
-      if (!line.startsWith('|')) break; // 테이블 끝
-      if (line.includes('---')) continue; // 구분선
-      const cells = line.split('|').filter(c => c.trim()).map(c => c.trim());
-      if (cells.length > 0) rows.push(cells);
+  const result = { total: 0 };
+
+  // 테이블 파싱 — 키워드 매칭으로 유연하게 찾기
+  function findTable(keywords) {
+    const lines = md.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (!line.trim().startsWith('|')) continue;
+      // 헤더 행에 모든 키워드가 포함되어 있는지 확인
+      const matches = keywords.every(kw => line.includes(kw));
+      if (!matches) continue;
+
+      // 헤더 발견 → 데이터 행 수집
+      const rows = [];
+      for (let j = i + 1; j < lines.length; j++) {
+        const dline = lines[j].trim();
+        if (!dline.startsWith('|')) break;
+        if (dline.includes('---')) continue;
+        const cells = dline.split('|').slice(1, -1).map(c => c.trim());
+        if (cells.some(c => c)) rows.push(cells);
+      }
+      return rows;
     }
-    return rows;
-  };
+    return [];
+  }
 
-  // 섹션 텍스트 추출 유틸
-  const getSection = (start, end) => {
-    const si = md.indexOf(start);
+  // 섹션 텍스트 추출 (##으로 시작하는 헤더 사이)
+  function getTextBetween(startKw, endKw) {
+    const si = md.indexOf(startKw);
     if (si === -1) return '';
-    const ei = end ? md.indexOf(end, si + start.length) : md.length;
-    return md.substring(si + start.length, ei === -1 ? md.length : ei).trim();
-  };
+    const afterStart = md.indexOf('\n', si);
+    if (afterStart === -1) return '';
+    const ei = endKw ? md.indexOf(endKw, afterStart) : md.length;
+    return md.substring(afterStart, ei === -1 ? md.length : ei).trim();
+  }
 
-  // 기본 정보 테이블
-  const metaRows = parseTable(md, '| 항목 | 내용 |');
-  const metaMap = {};
-  metaRows.forEach(r => { if (r.length >= 2) metaMap[r[0]] = r[1]; });
-
-  if (metaMap['프로젝트명']) document.getElementById('meta_project').value = metaMap['프로젝트명'];
-  if (metaMap['작성자']) document.getElementById('meta_author').value = metaMap['작성자'];
-  if (metaMap['부서']) document.getElementById('meta_dept').value = metaMap['부서'];
-  if (metaMap['작성일']) document.getElementById('meta_date').value = metaMap['작성일'];
-  if (metaMap['버전']) document.getElementById('meta_version').value = metaMap['버전'];
+  // 기본 정보 (항목/내용 테이블 또는 프로젝트명 키워드)
+  const metaRows = findTable(['항목', '내용']);
+  if (metaRows.length > 0) {
+    const m = {};
+    metaRows.forEach(r => { if (r.length >= 2) m[r[0]] = r[1]; });
+    if (m['프로젝트명']) { document.getElementById('meta_project').value = m['프로젝트명']; result.meta = true; }
+    if (m['작성자']) { document.getElementById('meta_author').value = m['작성자']; result.meta = true; }
+    if (m['부서']) document.getElementById('meta_dept').value = m['부서'];
+    if (m['작성일']) document.getElementById('meta_date').value = m['작성일'];
+    if (m['버전']) document.getElementById('meta_version').value = m['버전'];
+    if (result.meta) result.total++;
+  }
 
   // 1. 제품 개요
-  const overviewSec = getSection('## 1.', '## 2.');
-  const typeMatch = overviewSec.match(/\*\*유형:\*\*\s*(.+)/);
-  if (typeMatch) {
-    const types = typeMatch[1].split(',').map(t => t.trim());
-    document.querySelectorAll('input[name="product_type"]').forEach(cb => {
-      cb.checked = types.includes(cb.value);
-    });
+  const sec1 = getTextBetween('제품 개요', '## ');
+  if (sec1) {
+    // 유형 매칭 (여러 패턴 지원)
+    const typeMatch = sec1.match(/(?:\*\*)?(?:제품 )?유형(?:\*\*)?[:\s]*(.+)/);
+    if (typeMatch) {
+      const types = typeMatch[1].replace(/\*\*/g, '').split(',').map(t => t.trim()).filter(Boolean);
+      document.querySelectorAll('input[name="product_type"]').forEach(cb => {
+        cb.checked = types.some(t => cb.value.includes(t) || t.includes(cb.value));
+      });
+    }
+    const defMatch = sec1.match(/(?:\*\*)?한 줄 정의(?:\*\*)?[:\s]*(.+)/);
+    if (defMatch) {
+      const val = defMatch[1].replace(/\*\*/g, '').trim();
+      if (val && val !== '-') document.getElementById('oneliner').value = val;
+    }
   }
-  const defMatch = overviewSec.match(/\*\*한 줄 정의:\*\*\s*(.+)/);
-  if (defMatch && defMatch[1] !== '-') document.getElementById('oneliner').value = defMatch[1];
 
   // 2. 문제 & 목표
-  const probSec = getSection('### 문제', '### 목표');
-  if (probSec && probSec !== '-') document.getElementById('problem').value = probSec;
-  const objSec = getSection('### 목표', '## 3.');
-  if (objSec && objSec !== '-') document.getElementById('objective').value = objSec;
+  const probText = getTextBetween('문제', '목표');
+  if (probText) {
+    const clean = probText.replace(/^#+\s*.*/gm, '').replace(/^[-*]\s*/gm, '').trim();
+    if (clean && clean !== '-') { document.getElementById('problem').value = clean; result.total++; }
+  }
+  const objText = getTextBetween('목표', '## ');
+  if (objText) {
+    const clean = objText.replace(/^#+\s*.*/gm, '').replace(/^[-*]\s*/gm, '').trim();
+    if (clean && clean !== '-') document.getElementById('objective').value = clean;
+  }
 
-  // 3. 대상 사용자
-  const userRows = parseTable(md, '| 구분 | 유형 | 업무 | Pain Point |');
+  // 3. 대상 사용자 (구분/유형/업무 등 키워드로 찾기)
+  const userRows = findTable(['구분', '유형']) || findTable(['구분', '사용자']);
   if (userRows.length > 0) {
     rebuild('users', userRows.length, userRows.map(r => ({
       cat: r[0] || '', type: r[1] || '', task: r[2] || '', pain: r[3] || ''
     })));
+    result.users = userRows.length; result.total++;
   }
 
-  // 4. 핵심 기능
-  const featRows = parseTable(md, '| ID | 기능명 | 설명 | 우선순위 | AI |');
+  // 4. 핵심 기능 (ID/기능명 키워드)
+  const featRows = findTable(['기능명', '설명']) || findTable(['ID', '기능']);
   if (featRows.length > 0) {
-    rebuild('features', featRows.length, featRows.map(r => ({
-      name: r[1] || '', desc: r[2] || '', priority: r[3] || 'Must', ai: r[4] || 'O'
-    })));
+    // ID 컬럼이 있으면 1번부터, 없으면 0번부터
+    const hasId = featRows[0][0] && /^F-?\d/i.test(featRows[0][0]);
+    rebuild('features', featRows.length, featRows.map(r => {
+      const offset = hasId ? 1 : 0;
+      return { name: r[offset] || '', desc: r[offset+1] || '', priority: r[offset+2] || 'Must', ai: r[offset+3] || 'O' };
+    }));
+    result.features = featRows.length; result.total++;
   }
 
   // 5. AS-IS / TO-BE
-  const atRows = parseTable(md, '| 구분 | AS-IS | TO-BE |');
+  const atRows = findTable(['AS-IS', 'TO-BE']) || findTable(['AS-IS', 'TO-BE']);
   if (atRows.length > 0) {
-    rebuild('asistobe', atRows.length, atRows.map(r => ({
-      cat: r[0] || '', asis: r[1] || '', tobe: r[2] || ''
-    })));
+    rebuild('asistobe', atRows.length, atRows.map(r => {
+      // 화살표(→) 컬럼이 있을 수 있으므로 필터링
+      const cells = r.filter(c => c !== '→' && c !== '->');
+      return { cat: cells[0] || '', asis: cells[1] || '', tobe: cells[2] || '' };
+    }));
+    result.asistobe = atRows.length; result.total++;
   }
 
-  // 6. KPI
-  const kpiRows = parseTable(md, '| KPI | 현재 | 목표 | 측정 |');
+  // 6. 성공 지표 / KPI
+  const kpiRows = findTable(['KPI']) || findTable(['성공 지표']);
   if (kpiRows.length > 0) {
     rebuild('kpis', kpiRows.length, kpiRows.map(r => ({
       name: r[0] || '', current: r[1] || '', target: r[2] || '', method: r[3] || ''
     })));
+    result.kpis = kpiRows.length; result.total++;
   }
 
-  // 7. 일정
-  const phaseRows = parseTable(md, '| Phase | 기간 | 산출물 |');
+  // 7. 일정 / Phase
+  const phaseRows = findTable(['Phase', '기간']) || findTable(['일정', '기간']);
   if (phaseRows.length > 0) {
     rebuild('phases', phaseRows.length, phaseRows.map(r => ({
       name: r[0] || '', period: r[1] || '', output: r[2] || ''
     })));
+    result.phases = phaseRows.length; result.total++;
   }
 
   // 7-2. 리스크
-  const riskRows = parseTable(md, '| 리스크 | 대응 |');
+  const riskRows = findTable(['리스크', '대응']);
   if (riskRows.length > 0) {
     rebuild('risks', riskRows.length, riskRows.map(r => ({
       '': r[0] || '', response: r[1] || ''
     })));
+    result.risks = riskRows.length; result.total++;
   }
 
   // 8. 활용 기술
-  const techSec = getSection('## 8.', '');
-  if (techSec) {
-    const techItems = techSec.match(/^- (.+)$/gm);
-    if (techItems) {
-      const techs = techItems.map(t => t.replace(/^- /, '').trim());
+  const techText = getTextBetween('활용 기술', '## ') || getTextBetween('Tech Stack', '## ');
+  if (techText) {
+    const items = techText.match(/^[-*]\s+(.+)$/gm);
+    if (items) {
+      const techs = items.map(t => t.replace(/^[-*]\s+/, '').trim());
       document.querySelectorAll('input[name="tech"]').forEach(cb => {
-        cb.checked = techs.includes(cb.value);
+        cb.checked = techs.some(t => cb.value.includes(t) || t.includes(cb.value));
       });
+      result.tech = true; result.total++;
     }
   }
+
+  console.log('[MD 불러오기] 파싱 결과:', result);
+  return result;
 }
 
 // 자동 저장 (30초)

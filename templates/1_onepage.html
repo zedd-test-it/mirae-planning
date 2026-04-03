@@ -72,6 +72,8 @@
   .btn-row { padding: 2px 10px; font-size: 10px; border: 1px solid #ccc; background: #f9f9f9; cursor: pointer; font-family: inherit; border-radius: 2px; }
   .btn-row:hover { background: #eee; }
   .row-count { color: #999; margin-left: 4px; }
+  .req { color: #dc3545; font-size: 10px; }
+  .section-guide { font-size: 9px; color: #999; margin-bottom: 6px; font-weight: 400; line-height: 1.5; }
   .btn-del { background: none; border: none; color: #ccc; cursor: pointer; font-size: 13px; padding: 0 2px; line-height: 1; }
   .btn-del:hover { color: #dc3545; }
   .toast { position: fixed; top: 20px; right: 20px; background: #222; color: #fff; padding: 12px 20px; font-size: 12px; border-radius: 4px; z-index: 300; opacity: 0; transform: translateY(-10px); transition: all 0.3s; }
@@ -181,7 +183,8 @@
 
   <!-- 4. 핵심 기능 요구사항 -->
   <div class="section">
-    <div class="section-title">4. 핵심 기능 요구사항 <span>Key Features (MoSCoW)</span></div>
+    <div class="section-title">4. 핵심 기능 요구사항 <span class="req">*</span> <span>Key Features (MoSCoW)</span></div>
+    <div class="section-guide">각 기능의 이름과 설명을 구체적으로 작성하세요. 우선순위는 Must(필수)/Should(권장)/Could(선택)로 구분합니다.</div>
     <table>
       <thead><tr><th style="width:40px;">ID</th><th>기능명</th><th>설명</th><th style="width:70px;">우선순위</th><th style="width:55px;">AI 활용</th><th class="del-col" style="width:24px;"></th></tr></thead>
       <tbody id="features-tbody"></tbody>
@@ -189,6 +192,20 @@
     <div class="row-controls">
       <button type="button" class="btn-row" onclick="addRow('features')">+ 추가</button>
       <span class="row-count" id="features-count"></span>
+    </div>
+  </div>
+
+  <!-- 4-2. 기능별 Input/Output -->
+  <div class="section">
+    <div class="section-title">4-2. 기능별 Input / Output <span class="req">*</span> <span>I/O Definition</span></div>
+    <div class="section-guide">각 기능에 어떤 데이터가 입력되고 어떤 결과물이 나오는지 구체적으로 정의하세요. 결과물의 형태(PDF, 대시보드, 알림 등)도 명시하면 좋습니다.</div>
+    <table>
+      <thead><tr><th style="width:50px;">기능</th><th>Input (입력 데이터)</th><th>Output (결과물)</th><th>결과물 형태/스타일</th><th class="del-col" style="width:24px;"></th></tr></thead>
+      <tbody id="fio-tbody"></tbody>
+    </table>
+    <div class="row-controls">
+      <button type="button" class="btn-row" onclick="addRow('fio')">+ 추가</button>
+      <span class="row-count" id="fio-count"></span>
     </div>
   </div>
 
@@ -207,9 +224,10 @@
 
   <!-- 6. 성공 지표 -->
   <div class="section">
-    <div class="section-title">6. 성공 지표 <span>Success Metrics (KPI)</span></div>
+    <div class="section-title">6. 성공 지표 <span class="req">*</span> <span>Success Metrics (KPI)</span></div>
+    <div class="section-guide">KPI는 측정 가능한 구체적 수치로 작성하세요. 현재값과 목표값의 차이가 명확해야 합니다.</div>
     <table>
-      <thead><tr><th>KPI</th><th>현재값</th><th>목표값</th><th>측정 방법</th><th class="del-col" style="width:24px;"></th></tr></thead>
+      <thead><tr><th>KPI</th><th>현재값</th><th>목표값</th><th>측정 방법</th><th>측정 주기</th><th class="del-col" style="width:24px;"></th></tr></thead>
       <tbody id="kpis-tbody"></tbody>
     </table>
     <div class="row-controls">
@@ -245,9 +263,30 @@
     </div>
   </div>
 
-  <!-- 8. 활용 기술 -->
+  <!-- 8. 레퍼런스 & 벤치마크 -->
   <div class="section">
-    <div class="section-title">8. 활용 기술 <span>Tech Stack</span></div>
+    <div class="section-title">8. 레퍼런스 & 벤치마크 <span>References</span></div>
+    <div class="section-guide">참고하는 서비스나 경쟁 제품, 원하는 결과물 스타일을 구체적으로 기술하세요.</div>
+    <textarea id="reference" class="tall" placeholder="예) 참고 서비스: Wealthfront AI Advisor(자동 리밸런싱), 카카오뱅크 내 자산(포트폴리오 시각화)&#10;원하는 스타일: 고객별 1페이지 PDF 리포트, 카드형 대시보드 UI, 트래픽 라이트(초록/노랑/빨강) 위험도 표시"></textarea>
+  </div>
+
+  <!-- 9. QA / 품질관리 -->
+  <div class="section">
+    <div class="section-title">9. QA / 품질관리 <span class="req">*</span> <span>Quality Assurance</span></div>
+    <div class="section-guide">AI 결과물의 품질을 어떻게 검증할 것인지 기준과 방법을 정의하세요.</div>
+    <table>
+      <thead><tr><th>검증 항목</th><th>품질 기준</th><th>테스트 방법</th><th class="del-col" style="width:24px;"></th></tr></thead>
+      <tbody id="qa-tbody"></tbody>
+    </table>
+    <div class="row-controls">
+      <button type="button" class="btn-row" onclick="addRow('qa')">+ 추가</button>
+      <span class="row-count" id="qa-count"></span>
+    </div>
+  </div>
+
+  <!-- 10. 활용 기술 -->
+  <div class="section">
+    <div class="section-title">10. 활용 기술 <span>Tech Stack</span></div>
     <div class="check-group">
       <label><input type="checkbox" name="tech" value="LLM"> LLM (대규모 언어모델)</label>
       <label><input type="checkbox" name="tech" value="RAG"> RAG (검색증강생성)</label>
@@ -277,6 +316,12 @@
 <datalist id="dl-phase-name">
   <option value="1. MVP"><option value="2. 확장"><option value="3. 고도화"><option value="4. 안정화"><option value="5. 최적화">
 </datalist>
+<datalist id="dl-fio-func">
+  <option value="F-01"><option value="F-02"><option value="F-03"><option value="F-04"><option value="F-05"><option value="F-06"><option value="F-07"><option value="F-08">
+</datalist>
+<datalist id="dl-kpi-cycle">
+  <option value="실시간"><option value="일간"><option value="주간"><option value="월간"><option value="분기"><option value="반기"><option value="연간">
+</datalist>
 
 <!-- 하단 액션 바 -->
 <div class="action-bar">
@@ -294,7 +339,7 @@
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxW7k6CoNcs50-0lFQfkykNE27g3ZA27dJTQLPZvSwhh3Si_TXXCvhAacPUlkKQLw/exec';
 const META_IDS = ['meta_project', 'meta_author', 'meta_dept', 'meta_date', 'meta_version'];
-const STATIC_FIELDS = ['oneliner', 'problem', 'objective'];
+const STATIC_FIELDS = ['oneliner', 'problem', 'objective', 'reference'];
 
 const SEC = {
   users: {
@@ -320,6 +365,17 @@ const SEC = {
     id: (i, s) => `f${i}_${s}`,
     gl: (i) => `F-${String(i).padStart(2, '0')}`,
   },
+  fio: {
+    cid: 'fio-tbody', min: 1, max: 8, def: 2,
+    fields: [
+      { s: 'func', type: 'datalist', list: 'dl-fio-func', ph: '기능 (F-01 등)' },
+      { s: 'input', ph: 'Input (입력 데이터)' },
+      { s: 'output', ph: 'Output (결과물)' },
+      { s: 'style', ph: '결과물 형태/스타일' },
+    ],
+    id: (i, s) => `fio${i}_${s}`,
+    dv: [{ func: 'F-01' }, { func: 'F-02' }],
+  },
   asistobe: {
     cid: 'asistobe-tbody', min: 1, max: 6, def: 3,
     arrow: true,
@@ -338,6 +394,7 @@ const SEC = {
       { s: 'current', ph: '현재값' },
       { s: 'target', ph: '목표값' },
       { s: 'method', ph: '측정 방법' },
+      { s: 'cycle', type: 'datalist', list: 'dl-kpi-cycle', ph: '측정 주기' },
     ],
     id: (i, s) => `kpi${i}_${s}`,
   },
@@ -358,6 +415,19 @@ const SEC = {
       { s: 'response', ph: '대응 방안' },
     ],
     id: (i, s) => s ? `risk${i}_${s}` : `risk${i}`,
+  },
+  qa: {
+    cid: 'qa-tbody', min: 1, max: 6, def: 2,
+    fields: [
+      { s: 'item', ph: '검증 항목' },
+      { s: 'criteria', ph: '품질 기준' },
+      { s: 'method', ph: '테스트 방법' },
+    ],
+    id: (i, s) => `qa${i}_${s}`,
+    dv: [
+      { item: 'AI 결과 정확도', criteria: '할루시네이션 비율 5% 이하', method: '전문가 샘플 검증' },
+      { item: '응답 속도', criteria: '생성 30초 이내', method: '시스템 로그 모니터링' },
+    ],
   },
 };
 
@@ -632,10 +702,10 @@ function downloadMD() {
   }
   md += `\n`;
 
-  md += `## 6. 성공 지표\n| KPI | 현재 | 목표 | 측정 |\n|-----|------|------|------|\n`;
+  md += `## 6. 성공 지표\n| KPI | 현재 | 목표 | 측정 | 주기 |\n|-----|------|------|------|------|\n`;
   for (let i = 1; i <= RC.kpis; i++) {
     const n = v(SEC.kpis.id(i, 'name'));
-    if (n) md += `| ${n} | ${v(SEC.kpis.id(i, 'current'))} | ${v(SEC.kpis.id(i, 'target'))} | ${v(SEC.kpis.id(i, 'method'))} |\n`;
+    if (n) md += `| ${n} | ${v(SEC.kpis.id(i, 'current'))} | ${v(SEC.kpis.id(i, 'target'))} | ${v(SEC.kpis.id(i, 'method'))} | ${v(SEC.kpis.id(i, 'cycle'))} |\n`;
   }
   md += `\n`;
 
@@ -649,7 +719,25 @@ function downloadMD() {
     const r = v(SEC.risks.id(i, ''));
     if (r) md += `| ${r} | ${v(SEC.risks.id(i, 'response'))} |\n`;
   }
-  md += `\n## 8. 활용 기술\n`;
+  // 4-2. I/O
+  md += `## 4-2. 기능별 Input/Output\n| 기능 | Input | Output | 결과물 형태 |\n|------|-------|--------|----------|\n`;
+  for (let i = 1; i <= RC.fio; i++) {
+    const func = v(SEC.fio.id(i, 'func'));
+    if (func) md += `| ${func} | ${v(SEC.fio.id(i, 'input'))} | ${v(SEC.fio.id(i, 'output'))} | ${v(SEC.fio.id(i, 'style'))} |\n`;
+  }
+  md += `\n`;
+
+  // 8. 레퍼런스
+  md += `## 8. 레퍼런스\n${v('reference') || '-'}\n\n`;
+
+  // 9. QA
+  md += `## 9. QA / 품질관리\n| 검증 항목 | 품질 기준 | 테스트 방법 |\n|---------|---------|----------|\n`;
+  for (let i = 1; i <= RC.qa; i++) {
+    const item = v(SEC.qa.id(i, 'item'));
+    if (item) md += `| ${item} | ${v(SEC.qa.id(i, 'criteria'))} | ${v(SEC.qa.id(i, 'method'))} |\n`;
+  }
+
+  md += `\n## 10. 활용 기술\n`;
   const t = chk('tech');
   md += t.length ? t.map(x => `- ${x}`).join('\n') + '\n' : '- (미선택)\n';
 
@@ -688,6 +776,8 @@ function loadMD(input) {
         if (result.kpis) msgs.push(`KPI ${result.kpis}개`);
         if (result.phases) msgs.push(`일정 ${result.phases}개`);
         if (result.risks) msgs.push(`리스크 ${result.risks}개`);
+        if (result.fio) msgs.push(`I/O ${result.fio}개`);
+        if (result.qa) msgs.push(`QA ${result.qa}개`);
         if (result.tech) msgs.push('활용 기술');
         alert('MD 불러오기 완료!\n\n' + msgs.join(', ') + ' 반영됨\n\nStep 2(상세 기획안)에서 AI 자동 채우기를 사용할 수 있습니다.');
       }
@@ -860,7 +950,36 @@ function parseMD(md) {
     result.risks = riskRows.length; result.total++;
   }
 
-  // 8. 활용 기술
+  // 4-2. I/O
+  let fioRows = findTable(['Input', 'Output']);
+  if (!fioRows.length) fioRows = findTable(['기능', 'Input']);
+  console.log('[MD] I/O:', fioRows.length, '행');
+  if (fioRows.length > 0) {
+    rebuild('fio', fioRows.length, fioRows.map(r => ({
+      func: r[0] || '', input: r[1] || '', output: r[2] || '', style: r[3] || ''
+    })));
+    result.fio = fioRows.length; result.total++;
+  }
+
+  // 8. 레퍼런스
+  const refText = getTextBetween('레퍼런스', '## ') || getTextBetween('References', '## ');
+  if (refText) {
+    const clean = refText.replace(/^#+\s*.*/gm, '').trim();
+    if (clean && clean !== '-') { document.getElementById('reference').value = clean; result.total++; }
+  }
+
+  // 9. QA
+  let qaRows = findTable(['검증 항목', '품질']);
+  if (!qaRows.length) qaRows = findTable(['검증', '테스트']);
+  console.log('[MD] QA:', qaRows.length, '행');
+  if (qaRows.length > 0) {
+    rebuild('qa', qaRows.length, qaRows.map(r => ({
+      item: r[0] || '', criteria: r[1] || '', method: r[2] || ''
+    })));
+    result.qa = qaRows.length; result.total++;
+  }
+
+  // 10. 활용 기술
   const techText = getTextBetween('활용 기술', '## ') || getTextBetween('Tech Stack', '## ');
   if (techText) {
     const items = techText.match(/^[-*]\s+(.+)$/gm);

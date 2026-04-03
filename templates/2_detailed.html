@@ -1394,8 +1394,12 @@ setInterval(() => {
 // ════════════════════════════════════════════
 function checkOnepageData() {
   const saved = localStorage.getItem('prd_1page_data');
+  console.log('[Step2] localStorage prd_1page_data:', saved ? '있음 (' + saved.length + '자)' : '없음');
   if (saved) {
     document.getElementById('aiBanner').style.display = 'flex';
+    console.log('[Step2] AI 배너 표시됨');
+  } else {
+    console.log('[Step2] 1page 데이터 없음 — Step 1에서 먼저 작성/저장 필요');
   }
 }
 

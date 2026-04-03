@@ -1429,8 +1429,8 @@ async function aiAutoFill() {
     directMap[`df${i}_priority`] = f[`f${i}_priority`];
   }
   Object.assign(directMap, {
-    cmp_time_as: f.asis_time, cmp_time_to: f.tobe_time,
-    cmp_acc_as: f.asis_quality, cmp_acc_to: f.tobe_quality,
+    cmp_time_as: f.asis_time || f.at2_asis, cmp_time_to: f.tobe_time || f.at2_tobe,
+    cmp_acc_as: f.asis_quality || f.at3_asis, cmp_acc_to: f.tobe_quality || f.at3_tobe,
     kpi1_name: f.kpi1_name, kpi1_current: f.kpi1_current, kpi1_target: f.kpi1_target, kpi1_method: f.kpi1_method,
     kpi2_name: f.kpi2_name, kpi2_current: f.kpi2_current, kpi2_target: f.kpi2_target, kpi2_method: f.kpi2_method,
     kpi3_name: f.kpi3_name, kpi3_current: f.kpi3_current, kpi3_target: f.kpi3_target, kpi3_method: f.kpi3_method,

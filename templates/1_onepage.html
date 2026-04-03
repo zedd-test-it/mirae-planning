@@ -683,6 +683,10 @@ function loadMD(input) {
         if (result.phases) msgs.push(`일정 ${result.phases}개`);
         if (result.risks) msgs.push(`리스크 ${result.risks}개`);
         if (result.tech) msgs.push('활용 기술');
+        // localStorage에도 자동 저장 (step2 연동용)
+        const data = collectData('local');
+        localStorage.setItem('prd_1page_data', JSON.stringify(data));
+
         alert('MD 불러오기 완료!\n\n' + msgs.join(', ') + ' 반영됨\n\n내용을 확인하고 필요시 수정하세요.');
       }
     } catch (err) {

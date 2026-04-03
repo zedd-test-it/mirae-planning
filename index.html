@@ -113,6 +113,24 @@
     background: #444;
   }
 
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #ccc;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+
+  .flow-hint {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 32px;
+    padding: 0 24px;
+  }
+
   .footer {
     padding: 24px;
     font-size: 11px;
@@ -126,6 +144,11 @@
   @media (max-width: 720px) {
     .cards {
       flex-direction: column;
+    }
+
+    .flow-arrow {
+      transform: rotate(90deg);
+      padding: 8px 0;
     }
 
     .header {
@@ -145,10 +168,12 @@
   <p>미래에셋증권 AI 실무 교육 — 작성할 양식을 선택하세요</p>
 </div>
 
+<div class="flow-hint">STEP 1에서 요약을 작성하면, STEP 2에서 AI가 상세 기획안을 자동으로 채워줍니다</div>
+
 <div class="cards">
 
   <div class="card">
-    <div class="card-num">TEMPLATE 01</div>
+    <div class="card-num">STEP 1</div>
     <div class="card-title">1-Page Summary</div>
     <div class="card-desc">
       핵심만 담은 PRD 한 장 요약본.<br>
@@ -157,39 +182,26 @@
     <div class="card-tags">
       <span class="tag">8개 섹션</span>
       <span class="tag">A4 1장</span>
-      <span class="tag">빠른 작성</span>
+      <span class="tag">먼저 작성</span>
     </div>
     <a href="templates/1_onepage.html" class="card-btn">작성하기</a>
   </div>
 
+  <div class="flow-arrow">→</div>
+
   <div class="card">
-    <div class="card-num">TEMPLATE 02</div>
+    <div class="card-num">STEP 2</div>
     <div class="card-title">상세 기획안</div>
     <div class="card-desc">
       풀 스펙 PRD 상세 기획서.<br>
-      페르소나, 유저 저니, 기능 상세(I/P/O), 화면 설계, 기술 구조, 비기능 요구사항까지 포함합니다.
+      1-Page Summary 기반으로 AI가 자동 채우기를 제공합니다. 검토 후 수정하세요.
     </div>
     <div class="card-tags">
       <span class="tag">13개 섹션</span>
-      <span class="tag">SMART 목표</span>
-      <span class="tag">와이어프레임</span>
+      <span class="tag">AI 자동 채우기</span>
+      <span class="tag">검토/수정</span>
     </div>
     <a href="templates/2_detailed.html" class="card-btn">작성하기</a>
-  </div>
-
-  <div class="card">
-    <div class="card-num">TEMPLATE 03</div>
-    <div class="card-title">피드백 양식</div>
-    <div class="card-desc">
-      기획안 리뷰 & 피드백 시트.<br>
-      8개 항목 정량 평가(5점 척도), 자동 등급 산출, 정성 평가, 실행 판정(GO/NO-GO)을 작성합니다.
-    </div>
-    <div class="card-tags">
-      <span class="tag">5점 척도</span>
-      <span class="tag">자동 등급</span>
-      <span class="tag">액션 아이템</span>
-    </div>
-    <a href="templates/3_feedback.html" class="card-btn">작성하기</a>
   </div>
 
 </div>

@@ -286,6 +286,8 @@
   <button class="btn btn-draft" onclick="submitToSheet('draft')">시트 임시저장</button>
   <button class="btn btn-pdf" onclick="downloadPDF()">PDF 다운로드</button>
   <button class="btn btn-pdf" onclick="downloadMD()">MD 다운로드</button>
+  <button class="btn btn-pdf" onclick="document.getElementById('mdFileInput').click()">MD 불러오기</button>
+  <input type="file" id="mdFileInput" accept=".md" style="display:none;" onchange="loadMD(this)">
   <button class="btn btn-submit" style="margin-left:auto;" onclick="submitToSheet('submit')">제출</button>
 </div>
 
@@ -654,6 +656,142 @@ function downloadMD() {
   const fn = `PRD_1page_${v('meta_project') || 'PRD'}${v('meta_author') ? '_' + v('meta_author') : ''}.md`;
   const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fn; a.click(); URL.revokeObjectURL(a.href);
+}
+
+// MD 불러오기
+function loadMD(input) {
+  const file = input.files[0];
+  if (!file) return;
+  input.value = '';
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const md = e.target.result;
+    try {
+      parseMD(md);
+      showToast('MD 파일을 불러왔습니다. 내용을 확인하세요.', 'success');
+    } catch (err) {
+      showToast('MD 파싱 실패: ' + err.message, 'error');
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function parseMD(md) {
+  // 테이블 행 파싱 유틸
+  const parseTable = (text, headerPattern) => {
+    const idx = text.indexOf(headerPattern);
+    if (idx === -1) return [];
+    const after = text.substring(idx);
+    const lines = after.split('\n');
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) { // skip header
+      const line = lines[i].trim();
+      if (!line.startsWith('|')) break; // 테이블 끝
+      if (line.includes('---')) continue; // 구분선
+      const cells = line.split('|').filter(c => c.trim()).map(c => c.trim());
+      if (cells.length > 0) rows.push(cells);
+    }
+    return rows;
+  };
+
+  // 섹션 텍스트 추출 유틸
+  const getSection = (start, end) => {
+    const si = md.indexOf(start);
+    if (si === -1) return '';
+    const ei = end ? md.indexOf(end, si + start.length) : md.length;
+    return md.substring(si + start.length, ei === -1 ? md.length : ei).trim();
+  };
+
+  // 기본 정보 테이블
+  const metaRows = parseTable(md, '| 항목 | 내용 |');
+  const metaMap = {};
+  metaRows.forEach(r => { if (r.length >= 2) metaMap[r[0]] = r[1]; });
+
+  if (metaMap['프로젝트명']) document.getElementById('meta_project').value = metaMap['프로젝트명'];
+  if (metaMap['작성자']) document.getElementById('meta_author').value = metaMap['작성자'];
+  if (metaMap['부서']) document.getElementById('meta_dept').value = metaMap['부서'];
+  if (metaMap['작성일']) document.getElementById('meta_date').value = metaMap['작성일'];
+  if (metaMap['버전']) document.getElementById('meta_version').value = metaMap['버전'];
+
+  // 1. 제품 개요
+  const overviewSec = getSection('## 1.', '## 2.');
+  const typeMatch = overviewSec.match(/\*\*유형:\*\*\s*(.+)/);
+  if (typeMatch) {
+    const types = typeMatch[1].split(',').map(t => t.trim());
+    document.querySelectorAll('input[name="product_type"]').forEach(cb => {
+      cb.checked = types.includes(cb.value);
+    });
+  }
+  const defMatch = overviewSec.match(/\*\*한 줄 정의:\*\*\s*(.+)/);
+  if (defMatch && defMatch[1] !== '-') document.getElementById('oneliner').value = defMatch[1];
+
+  // 2. 문제 & 목표
+  const probSec = getSection('### 문제', '### 목표');
+  if (probSec && probSec !== '-') document.getElementById('problem').value = probSec;
+  const objSec = getSection('### 목표', '## 3.');
+  if (objSec && objSec !== '-') document.getElementById('objective').value = objSec;
+
+  // 3. 대상 사용자
+  const userRows = parseTable(md, '| 구분 | 유형 | 업무 | Pain Point |');
+  if (userRows.length > 0) {
+    rebuild('users', userRows.length, userRows.map(r => ({
+      cat: r[0] || '', type: r[1] || '', task: r[2] || '', pain: r[3] || ''
+    })));
+  }
+
+  // 4. 핵심 기능
+  const featRows = parseTable(md, '| ID | 기능명 | 설명 | 우선순위 | AI |');
+  if (featRows.length > 0) {
+    rebuild('features', featRows.length, featRows.map(r => ({
+      name: r[1] || '', desc: r[2] || '', priority: r[3] || 'Must', ai: r[4] || 'O'
+    })));
+  }
+
+  // 5. AS-IS / TO-BE
+  const atRows = parseTable(md, '| 구분 | AS-IS | TO-BE |');
+  if (atRows.length > 0) {
+    rebuild('asistobe', atRows.length, atRows.map(r => ({
+      cat: r[0] || '', asis: r[1] || '', tobe: r[2] || ''
+    })));
+  }
+
+  // 6. KPI
+  const kpiRows = parseTable(md, '| KPI | 현재 | 목표 | 측정 |');
+  if (kpiRows.length > 0) {
+    rebuild('kpis', kpiRows.length, kpiRows.map(r => ({
+      name: r[0] || '', current: r[1] || '', target: r[2] || '', method: r[3] || ''
+    })));
+  }
+
+  // 7. 일정
+  const phaseRows = parseTable(md, '| Phase | 기간 | 산출물 |');
+  if (phaseRows.length > 0) {
+    rebuild('phases', phaseRows.length, phaseRows.map(r => ({
+      name: r[0] || '', period: r[1] || '', output: r[2] || ''
+    })));
+  }
+
+  // 7-2. 리스크
+  const riskRows = parseTable(md, '| 리스크 | 대응 |');
+  if (riskRows.length > 0) {
+    rebuild('risks', riskRows.length, riskRows.map(r => ({
+      '': r[0] || '', response: r[1] || ''
+    })));
+  }
+
+  // 8. 활용 기술
+  const techSec = getSection('## 8.', '');
+  if (techSec) {
+    const techItems = techSec.match(/^- (.+)$/gm);
+    if (techItems) {
+      const techs = techItems.map(t => t.replace(/^- /, '').trim());
+      document.querySelectorAll('input[name="tech"]').forEach(cb => {
+        cb.checked = techs.includes(cb.value);
+      });
+    }
+  }
 }
 
 // 자동 저장 (30초)

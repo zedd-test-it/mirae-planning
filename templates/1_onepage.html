@@ -25,7 +25,6 @@
     box-shadow: 0 1px 8px rgba(0,0,0,0.1);
   }
 
-  /* 문서 헤더 */
   .doc-header {
     border-bottom: 2px solid #222;
     padding-bottom: 12px;
@@ -35,7 +34,6 @@
   .doc-header h1 { font-size: 20px; font-weight: 700; }
   .doc-header .sub { font-size: 11px; color: #888; margin-top: 2px; }
 
-  /* 메타 정보 */
   .meta-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -66,7 +64,6 @@
 
   .meta-item input:focus { border-bottom-color: #222; }
 
-  /* 섹션 */
   .section { margin-bottom: 16px; }
 
   .section-title {
@@ -79,7 +76,6 @@
 
   .section-title span { font-weight: 400; color: #888; font-size: 10px; margin-left: 6px; }
 
-  /* 입력 필드 */
   input[type="text"], textarea, select {
     font-family: inherit;
     font-size: 11px;
@@ -100,7 +96,6 @@
   textarea { min-height: 40px; line-height: 1.6; }
   textarea.tall { min-height: 56px; }
 
-  /* 테이블 */
   table {
     width: 100%;
     border-collapse: collapse;
@@ -133,10 +128,8 @@
 
   th.c, td.c { text-align: center; }
 
-  /* 2단 */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-  /* 체크박스 그룹 */
   .check-group {
     display: flex; flex-wrap: wrap; gap: 10px;
     font-size: 10px; color: #555;
@@ -145,7 +138,6 @@
   .check-group label { display: flex; align-items: center; gap: 3px; cursor: pointer; }
   .check-group input[type="checkbox"] { width: auto; margin: 0; }
 
-  /* 푸터 */
   .doc-footer {
     margin-top: 16px;
     padding-top: 8px;
@@ -156,7 +148,6 @@
     justify-content: space-between;
   }
 
-  /* 하단 고정 바 */
   .action-bar {
     position: fixed;
     bottom: 0;
@@ -196,10 +187,7 @@
 
   .btn:hover { background: #f5f5f5; }
 
-  .btn-draft {
-    border-color: #888;
-    color: #444;
-  }
+  .btn-draft { border-color: #888; color: #444; }
 
   .btn-submit {
     background: #222;
@@ -209,17 +197,29 @@
 
   .btn-submit:hover { background: #444; }
 
-  .btn-pdf {
-    border-color: #555;
-    color: #333;
-  }
+  .btn-pdf { border-color: #555; color: #333; }
 
-  .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* 알림 */
+  .row-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 4px;
+    font-size: 10px;
+  }
+  .btn-row {
+    padding: 2px 10px;
+    font-size: 10px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    cursor: pointer;
+    font-family: inherit;
+    border-radius: 2px;
+  }
+  .btn-row:hover { background: #eee; }
+  .row-count { color: #999; margin-left: 4px; }
+
   .toast {
     position: fixed;
     top: 20px;
@@ -235,20 +235,15 @@
     transition: all 0.3s;
   }
 
-  .toast.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
+  .toast.show { opacity: 1; transform: translateY(0); }
   .toast.success { background: #28a745; }
   .toast.error { background: #dc3545; }
 
   @media print {
-    .action-bar, .toast { display: none !important; }
+    .action-bar, .toast, .row-controls { display: none !important; }
     body { background: white; padding: 0; margin: 0; }
     .page { box-shadow: none; padding: 24px 30px; width: 100%; }
 
-    /* 입력 필드를 일반 텍스트처럼 보이게 */
     input[type="text"], textarea, select {
       border: none !important;
       background: none !important;
@@ -259,13 +254,8 @@
     }
 
     textarea { min-height: unset; height: auto; overflow: visible; }
-
-    /* 체크박스는 그대로 보이게 */
     .check-group label { font-size: 9px; }
-
-    /* placeholder 숨기기 */
     input::placeholder, textarea::placeholder { color: transparent; }
-
     td { padding: 3px 6px; }
   }
 
@@ -274,7 +264,6 @@
 </head>
 <body>
 
-<!-- 알림 -->
 <div class="toast" id="toast"></div>
 
 <div class="page">
@@ -283,7 +272,6 @@
     <div class="sub">Product Requirements Document — AI 업무 효율화 기획</div>
   </div>
 
-  <!-- 메타 정보 -->
   <div class="meta-row">
     <div class="meta-item">
       <label>프로젝트명 *</label>
@@ -349,56 +337,28 @@
   <div class="section">
     <div class="section-title">3. 대상 사용자 <span>Target Users</span></div>
     <table>
-      <tr><th>구분</th><th>사용자 유형</th><th>주요 업무</th><th>Pain Point</th></tr>
-      <tr>
-        <td class="c">Primary</td>
-        <td><input type="text" id="user_pri_type" placeholder="예) PB (자산관리사)"></td>
-        <td><input type="text" id="user_pri_task" placeholder="예) VIP 고객 포트폴리오 관리 및 리밸런싱 상담"></td>
-        <td><input type="text" id="user_pri_pain" placeholder="예) 고객별 맞춤 제안서 수동 작성에 시간 과다 소요"></td>
-      </tr>
-      <tr>
-        <td class="c">Secondary</td>
-        <td><input type="text" id="user_sec_type" placeholder="예) 지점장"></td>
-        <td><input type="text" id="user_sec_task" placeholder="예) PB 성과 관리 및 고객 만족도 모니터링"></td>
-        <td><input type="text" id="user_sec_pain" placeholder="예) PB별 상담 품질 편차가 크고 실시간 파악 어려움"></td>
-      </tr>
+      <thead><tr><th>구분</th><th>사용자 유형</th><th>주요 업무</th><th>Pain Point</th></tr></thead>
+      <tbody id="users-tbody"></tbody>
     </table>
+    <div class="row-controls">
+      <button type="button" class="btn-row" onclick="addRow('users')">+ 추가</button>
+      <button type="button" class="btn-row" onclick="removeRow('users')">- 삭제</button>
+      <span class="row-count" id="users-count"></span>
+    </div>
   </div>
 
   <!-- 4. 핵심 기능 요구사항 -->
   <div class="section">
     <div class="section-title">4. 핵심 기능 요구사항 <span>Key Features (MoSCoW)</span></div>
     <table>
-      <tr><th style="width:40px;">ID</th><th>기능명</th><th>설명</th><th style="width:70px;">우선순위</th><th style="width:55px;">AI 활용</th></tr>
-      <tr>
-        <td class="c">F-01</td>
-        <td><input type="text" id="f1_name" placeholder="예) AI 리밸런싱 제안서 생성"></td>
-        <td><input type="text" id="f1_desc" placeholder="예) 고객 보유종목+시장동향 분석 후 맞춤 리밸런싱 제안서를 AI로 자동 생성"></td>
-        <td><select id="f1_priority"><option value="Must">Must</option><option value="Should">Should</option><option value="Could">Could</option></select></td>
-        <td><select id="f1_ai"><option value="O">O</option><option value="X">X</option></select></td>
-      </tr>
-      <tr>
-        <td class="c">F-02</td>
-        <td><input type="text" id="f2_name" placeholder="예) 시장 동향 브리핑"></td>
-        <td><input type="text" id="f2_desc" placeholder="예) 당일 시장 이슈를 고객 포트폴리오 관점에서 요약 브리핑 생성"></td>
-        <td><select id="f2_priority"><option value="Must">Must</option><option value="Should">Should</option><option value="Could">Could</option></select></td>
-        <td><select id="f2_ai"><option value="O">O</option><option value="X">X</option></select></td>
-      </tr>
-      <tr>
-        <td class="c">F-03</td>
-        <td><input type="text" id="f3_name" placeholder="예) 고객 이탈 위험 알림"></td>
-        <td><input type="text" id="f3_desc" placeholder="예) 거래 패턴/접촉 이력 분석으로 이탈 위험 고객을 조기 식별하여 알림"></td>
-        <td><select id="f3_priority"><option value="Must">Must</option><option value="Should">Should</option><option value="Could">Could</option></select></td>
-        <td><select id="f3_ai"><option value="O">O</option><option value="X">X</option></select></td>
-      </tr>
-      <tr>
-        <td class="c">F-04</td>
-        <td><input type="text" id="f4_name" placeholder="예) 상담 이력 자동 정리"></td>
-        <td><input type="text" id="f4_desc" placeholder="예) 고객 상담 내용을 AI가 자동 요약하여 CRM에 기록"></td>
-        <td><select id="f4_priority"><option value="Must">Must</option><option value="Should">Should</option><option value="Could">Could</option></select></td>
-        <td><select id="f4_ai"><option value="O">O</option><option value="X">X</option></select></td>
-      </tr>
+      <thead><tr><th style="width:40px;">ID</th><th>기능명</th><th>설명</th><th style="width:70px;">우선순위</th><th style="width:55px;">AI 활용</th></tr></thead>
+      <tbody id="features-tbody"></tbody>
     </table>
+    <div class="row-controls">
+      <button type="button" class="btn-row" onclick="addRow('features')">+ 추가</button>
+      <button type="button" class="btn-row" onclick="removeRow('features')">- 삭제</button>
+      <span class="row-count" id="features-count"></span>
+    </div>
   </div>
 
   <!-- 5. AS-IS / TO-BE -->
@@ -431,26 +391,14 @@
   <div class="section">
     <div class="section-title">6. 성공 지표 <span>Success Metrics (KPI)</span></div>
     <table>
-      <tr><th>KPI</th><th>현재값</th><th>목표값</th><th>측정 방법</th></tr>
-      <tr>
-        <td><input type="text" id="kpi1_name" placeholder="예) 제안서 작성 시간"></td>
-        <td><input type="text" id="kpi1_current" placeholder="예) 2시간/건"></td>
-        <td><input type="text" id="kpi1_target" placeholder="예) 15분/건"></td>
-        <td><input type="text" id="kpi1_method" placeholder="예) 시스템 로그 분석"></td>
-      </tr>
-      <tr>
-        <td><input type="text" id="kpi2_name" placeholder="예) 분기 미팅 소화율"></td>
-        <td><input type="text" id="kpi2_current" placeholder="예) 45%"></td>
-        <td><input type="text" id="kpi2_target" placeholder="예) 90%"></td>
-        <td><input type="text" id="kpi2_method" placeholder="예) CRM 미팅 기록 집계"></td>
-      </tr>
-      <tr>
-        <td><input type="text" id="kpi3_name" placeholder="예) 고객 만족도 (NPS)"></td>
-        <td><input type="text" id="kpi3_current" placeholder="예) 32점"></td>
-        <td><input type="text" id="kpi3_target" placeholder="예) 55점"></td>
-        <td><input type="text" id="kpi3_method" placeholder="예) 분기별 고객 설문"></td>
-      </tr>
+      <thead><tr><th>KPI</th><th>현재값</th><th>목표값</th><th>측정 방법</th></tr></thead>
+      <tbody id="kpis-tbody"></tbody>
     </table>
+    <div class="row-controls">
+      <button type="button" class="btn-row" onclick="addRow('kpis')">+ 추가</button>
+      <button type="button" class="btn-row" onclick="removeRow('kpis')">- 삭제</button>
+      <span class="row-count" id="kpis-count"></span>
+    </div>
   </div>
 
   <!-- 7. 일정 & 리스크 -->
@@ -479,20 +427,14 @@
       </div>
       <div>
         <table>
-          <tr><th>리스크</th><th>대응 방안</th></tr>
-          <tr>
-            <td><input type="text" id="risk1" placeholder="예) AI 생성 정보의 정확성/할루시네이션"></td>
-            <td><input type="text" id="risk1_response" placeholder="예) PB 최종 검토 필수화, 팩트체크 자동 검증 로직"></td>
-          </tr>
-          <tr>
-            <td><input type="text" id="risk2" placeholder="예) 고객 개인정보 보안 이슈"></td>
-            <td><input type="text" id="risk2_response" placeholder="예) 사내 폐쇄망 운영, 데이터 암호화, 접근 권한 관리"></td>
-          </tr>
-          <tr>
-            <td><input type="text" id="risk3" placeholder="예) 현업 사용자 채택률 저하"></td>
-            <td><input type="text" id="risk3_response" placeholder="예) 파일럿 팀 우선 도입, 교육 병행, 피드백 반영 개선"></td>
-          </tr>
+          <thead><tr><th>리스크</th><th>대응 방안</th></tr></thead>
+          <tbody id="risks-tbody"></tbody>
         </table>
+        <div class="row-controls">
+          <button type="button" class="btn-row" onclick="addRow('risks')">+ 추가</button>
+          <button type="button" class="btn-row" onclick="removeRow('risks')">- 삭제</button>
+          <span class="row-count" id="risks-count"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -528,73 +470,212 @@
 </div>
 
 <script>
-// ════════════════════════════════════════════
-// 설정 — Apps Script 배포 후 아래 URL 교체
-// ════════════════════════════════════════════
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxW7k6CoNcs50-0lFQfkykNE27g3ZA27dJTQLPZvSwhh3Si_TXXCvhAacPUlkKQLw/exec';
-
-// ════════════════════════════════════════════
-// 모든 입력 필드 ID 목록
-// ════════════════════════════════════════════
-const FIELD_IDS = [
+const META_IDS = ['meta_project', 'meta_author', 'meta_dept', 'meta_date', 'meta_version'];
+const STATIC_FIELDS = [
   'oneliner', 'problem', 'objective',
-  'user_pri_type', 'user_pri_task', 'user_pri_pain',
-  'user_sec_type', 'user_sec_task', 'user_sec_pain',
-  'f1_name', 'f1_desc', 'f1_priority', 'f1_ai',
-  'f2_name', 'f2_desc', 'f2_priority', 'f2_ai',
-  'f3_name', 'f3_desc', 'f3_priority', 'f3_ai',
-  'f4_name', 'f4_desc', 'f4_priority', 'f4_ai',
-  'asis_process', 'tobe_process',
-  'asis_time', 'tobe_time',
-  'asis_quality', 'tobe_quality',
-  'kpi1_name', 'kpi1_current', 'kpi1_target', 'kpi1_method',
-  'kpi2_name', 'kpi2_current', 'kpi2_target', 'kpi2_method',
-  'kpi3_name', 'kpi3_current', 'kpi3_target', 'kpi3_method',
-  'phase1_period', 'phase1_output',
-  'phase2_period', 'phase2_output',
-  'phase3_period', 'phase3_output',
-  'risk1', 'risk1_response',
-  'risk2', 'risk2_response',
-  'risk3', 'risk3_response',
+  'asis_process', 'tobe_process', 'asis_time', 'tobe_time', 'asis_quality', 'tobe_quality',
+  'phase1_period', 'phase1_output', 'phase2_period', 'phase2_output', 'phase3_period', 'phase3_output',
 ];
 
-const META_IDS = ['meta_project', 'meta_author', 'meta_dept', 'meta_date', 'meta_version'];
+// 동적 섹션 설정
+const SECTION_CONFIG = {
+  users: {
+    containerId: 'users-tbody', min: 1, max: 4, defaultCount: 2,
+    labels: ['Primary', 'Secondary', 'User 3', 'User 4'],
+    fields: [
+      { suffix: 'type', placeholder: '사용자 유형' },
+      { suffix: 'task', placeholder: '주요 업무' },
+      { suffix: 'pain', placeholder: 'Pain Point' },
+    ],
+    getId: (i, s) => i <= 2 ? `user_${['pri','sec'][i-1]}_${s}` : `user_${i}_${s}`,
+  },
+  features: {
+    containerId: 'features-tbody', min: 1, max: 8, defaultCount: 4,
+    fields: [
+      { suffix: 'name', type: 'text', placeholder: '기능명' },
+      { suffix: 'desc', type: 'text', placeholder: '설명' },
+      { suffix: 'priority', type: 'select', options: ['Must', 'Should', 'Could'] },
+      { suffix: 'ai', type: 'select', options: ['O', 'X'] },
+    ],
+    getId: (i, s) => `f${i}_${s}`,
+    getLabel: (i) => `F-${String(i).padStart(2, '0')}`,
+  },
+  kpis: {
+    containerId: 'kpis-tbody', min: 1, max: 6, defaultCount: 3,
+    fields: [
+      { suffix: 'name', placeholder: 'KPI명' },
+      { suffix: 'current', placeholder: '현재값' },
+      { suffix: 'target', placeholder: '목표값' },
+      { suffix: 'method', placeholder: '측정 방법' },
+    ],
+    getId: (i, s) => `kpi${i}_${s}`,
+  },
+  risks: {
+    containerId: 'risks-tbody', min: 1, max: 6, defaultCount: 3,
+    fields: [
+      { suffix: '', placeholder: '리스크 요인' },
+      { suffix: 'response', placeholder: '대응 방안' },
+    ],
+    getId: (i, s) => s ? `risk${i}_${s}` : `risk${i}`,
+  },
+};
 
-// ════════════════════════════════════════════
-// 데이터 수집
-// ════════════════════════════════════════════
+const rowCounts = { users: 0, features: 0, kpis: 0, risks: 0 };
+
+// 동적 행 HTML 생성
+function buildRowHTML(section, idx) {
+  const cfg = SECTION_CONFIG[section];
+  let html = '<tr>';
+
+  if (section === 'users') {
+    html += `<td class="c">${cfg.labels[idx - 1] || 'User ' + idx}</td>`;
+    cfg.fields.forEach(f => {
+      html += `<td><input type="text" id="${cfg.getId(idx, f.suffix)}" placeholder="${f.placeholder}"></td>`;
+    });
+  } else if (section === 'features') {
+    html += `<td class="c">${cfg.getLabel(idx)}</td>`;
+    cfg.fields.forEach(f => {
+      const id = cfg.getId(idx, f.suffix);
+      if (f.type === 'select') {
+        html += `<td><select id="${id}">${f.options.map(o => `<option value="${o}">${o}</option>`).join('')}</select></td>`;
+      } else {
+        html += `<td><input type="text" id="${id}" placeholder="${f.placeholder}"></td>`;
+      }
+    });
+  } else {
+    cfg.fields.forEach(f => {
+      html += `<td><input type="text" id="${cfg.getId(idx, f.suffix)}" placeholder="${f.placeholder}"></td>`;
+    });
+  }
+
+  html += '</tr>';
+  return html;
+}
+
+function addRow(section) {
+  const cfg = SECTION_CONFIG[section];
+  if (rowCounts[section] >= cfg.max) {
+    showToast(`최대 ${cfg.max}개까지 추가할 수 있습니다.`, 'error');
+    return;
+  }
+  rowCounts[section]++;
+  document.getElementById(cfg.containerId).insertAdjacentHTML('beforeend', buildRowHTML(section, rowCounts[section]));
+  updateCount(section);
+}
+
+function removeRow(section) {
+  const cfg = SECTION_CONFIG[section];
+  if (rowCounts[section] <= cfg.min) {
+    showToast(`최소 ${cfg.min}개는 유지해야 합니다.`, 'error');
+    return;
+  }
+  const tbody = document.getElementById(cfg.containerId);
+  tbody.removeChild(tbody.lastElementChild);
+  rowCounts[section]--;
+  updateCount(section);
+}
+
+function updateCount(section) {
+  const cfg = SECTION_CONFIG[section];
+  const el = document.getElementById(`${section}-count`);
+  if (el) el.textContent = `${rowCounts[section]} / ${cfg.max}`;
+}
+
+function rebuildSection(section, count) {
+  const cfg = SECTION_CONFIG[section];
+  const tbody = document.getElementById(cfg.containerId);
+  tbody.innerHTML = '';
+  const n = Math.max(cfg.min, Math.min(cfg.max, count));
+  for (let i = 1; i <= n; i++) {
+    tbody.insertAdjacentHTML('beforeend', buildRowHTML(section, i));
+  }
+  rowCounts[section] = n;
+  updateCount(section);
+}
+
+function initDynamicSections() {
+  Object.entries(SECTION_CONFIG).forEach(([section, cfg]) => {
+    rebuildSection(section, cfg.defaultCount);
+  });
+}
+
+// 데이터 수집 (동적)
 function collectData(action) {
   const fields = {};
 
-  // 일반 필드
-  FIELD_IDS.forEach(id => {
+  // 고정 필드
+  STATIC_FIELDS.forEach(id => {
     const el = document.getElementById(id);
     if (el) fields[id] = el.value;
   });
 
-  // 체크박스: 제품 유형
+  // 메타 필드
+  META_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) fields[id] = el.value;
+  });
+
+  // 동적 섹션
+  // 사용자
+  for (let i = 1; i <= rowCounts.users; i++) {
+    SECTION_CONFIG.users.fields.forEach(f => {
+      const id = SECTION_CONFIG.users.getId(i, f.suffix);
+      const el = document.getElementById(id);
+      if (el) fields[id] = el.value;
+    });
+  }
+  fields._user_count = rowCounts.users;
+
+  // 기능
+  for (let i = 1; i <= rowCounts.features; i++) {
+    SECTION_CONFIG.features.fields.forEach(f => {
+      const id = SECTION_CONFIG.features.getId(i, f.suffix);
+      const el = document.getElementById(id);
+      if (el) fields[id] = el.value;
+    });
+  }
+  fields._feature_count = rowCounts.features;
+
+  // KPI
+  for (let i = 1; i <= rowCounts.kpis; i++) {
+    SECTION_CONFIG.kpis.fields.forEach(f => {
+      const id = SECTION_CONFIG.kpis.getId(i, f.suffix);
+      const el = document.getElementById(id);
+      if (el) fields[id] = el.value;
+    });
+  }
+  fields._kpi_count = rowCounts.kpis;
+
+  // 리스크
+  for (let i = 1; i <= rowCounts.risks; i++) {
+    SECTION_CONFIG.risks.fields.forEach(f => {
+      const id = SECTION_CONFIG.risks.getId(i, f.suffix);
+      const el = document.getElementById(id);
+      if (el) fields[id] = el.value;
+    });
+  }
+  fields._risk_count = rowCounts.risks;
+
+  // 체크박스
   const types = [];
   document.querySelectorAll('input[name="product_type"]:checked').forEach(cb => types.push(cb.value));
   fields.product_type = types.join(', ');
 
-  // 체크박스: 활용 기술
   const techs = [];
   document.querySelectorAll('input[name="tech"]:checked').forEach(cb => techs.push(cb.value));
   fields.tech_stack = techs.join(', ');
 
   return {
-    action: action,
-    type: '1page',
+    action, type: '1page',
     meta_project: document.getElementById('meta_project').value,
     meta_author: document.getElementById('meta_author').value,
     meta_dept: document.getElementById('meta_dept').value,
-    fields: fields,
+    fields,
   };
 }
 
-// ════════════════════════════════════════════
-// 로컬 임시저장 (localStorage)
-// ════════════════════════════════════════════
+// 로컬 저장
 function saveLocal() {
   const data = collectData('local');
   localStorage.setItem('prd_1page_data', JSON.stringify(data));
@@ -602,40 +683,46 @@ function saveLocal() {
   showToast('로컬에 임시저장되었습니다.', 'success');
 }
 
+// 로컬 복원
 function loadLocal() {
   const saved = localStorage.getItem('prd_1page_data');
   if (!saved) return;
 
   try {
     const data = JSON.parse(saved);
+    const f = data.fields || {};
 
     // 메타 복원
     if (data.meta_project) document.getElementById('meta_project').value = data.meta_project;
     if (data.meta_author) document.getElementById('meta_author').value = data.meta_author;
     if (data.meta_dept) document.getElementById('meta_dept').value = data.meta_dept;
 
-    const f = data.fields || {};
+    // 동적 섹션 재구성
+    rebuildSection('users', parseInt(f._user_count) || SECTION_CONFIG.users.defaultCount);
+    rebuildSection('features', parseInt(f._feature_count) || SECTION_CONFIG.features.defaultCount);
+    rebuildSection('kpis', parseInt(f._kpi_count) || SECTION_CONFIG.kpis.defaultCount);
+    rebuildSection('risks', parseInt(f._risk_count) || SECTION_CONFIG.risks.defaultCount);
 
-    // 일반 필드 복원
-    FIELD_IDS.forEach(id => {
+    // 필드값 복원
+    Object.entries(f).forEach(([id, val]) => {
+      if (id.startsWith('_')) return;
       const el = document.getElementById(id);
-      if (el && f[id]) el.value = f[id];
+      if (!el || !val) return;
+      if (el.tagName === 'SELECT') {
+        for (const opt of el.options) { if (opt.value === val) { el.value = val; break; } }
+      } else {
+        el.value = val;
+      }
     });
 
-    // 체크박스 복원: 제품 유형
+    // 체크박스 복원
     if (f.product_type) {
       const types = f.product_type.split(', ');
-      document.querySelectorAll('input[name="product_type"]').forEach(cb => {
-        cb.checked = types.includes(cb.value);
-      });
+      document.querySelectorAll('input[name="product_type"]').forEach(cb => cb.checked = types.includes(cb.value));
     }
-
-    // 체크박스 복원: 활용 기술
     if (f.tech_stack) {
       const techs = f.tech_stack.split(', ');
-      document.querySelectorAll('input[name="tech"]').forEach(cb => {
-        cb.checked = techs.includes(cb.value);
-      });
+      document.querySelectorAll('input[name="tech"]').forEach(cb => cb.checked = techs.includes(cb.value));
     }
 
     showStatus('로컬 데이터 불러옴', 'saved');
@@ -644,36 +731,28 @@ function loadLocal() {
   }
 }
 
-// ════════════════════════════════════════════
 // 초기화
-// ════════════════════════════════════════════
 function resetForm() {
   if (!confirm('모든 입력 내용을 초기화하시겠습니까?')) return;
 
-  // 텍스트 입력 초기화
   META_IDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  FIELD_IDS.forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (el.tagName === 'SELECT') el.selectedIndex = 0;
-    else el.value = '';
-  });
-
-  // 체크박스 초기화
   document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
 
-  // localStorage 삭제
-  localStorage.removeItem('prd_1page_data');
+  // 동적 섹션 기본값으로 리셋
+  Object.entries(SECTION_CONFIG).forEach(([section, cfg]) => {
+    rebuildSection(section, cfg.defaultCount);
+  });
 
+  // 고정 필드 초기화
+  STATIC_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+
+  localStorage.removeItem('prd_1page_data');
   showStatus('초기화 완료', '');
   showToast('모든 입력이 초기화되었습니다.', 'success');
 }
 
-// ════════════════════════════════════════════
 // 구글 시트 전송
-// ════════════════════════════════════════════
 async function submitToSheet(action) {
-  // 필수 입력 확인
   const author = document.getElementById('meta_author').value.trim();
   const project = document.getElementById('meta_project').value.trim();
 
@@ -682,14 +761,8 @@ async function submitToSheet(action) {
     return;
   }
 
-  if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-    showToast('Apps Script URL이 설정되지 않았습니다.', 'error');
-    return;
-  }
-
   const label = action === 'draft' ? '임시저장' : '제출';
 
-  // 제출 확인
   if (action === 'submit') {
     if (!confirm('기획안을 최종 제출하시겠습니까?\n제출 후에도 다시 제출하면 덮어씁니다.')) return;
   }
@@ -712,8 +785,14 @@ async function submitToSheet(action) {
     if (result.status === 'success') {
       showStatus(`${label} 완료 (${new Date().toLocaleTimeString()})`, 'saved');
       showToast(result.message, 'success');
-      // 로컬에도 저장
       localStorage.setItem('prd_1page_data', JSON.stringify(data));
+
+      // 홈 화면 이동 안내
+      setTimeout(() => {
+        if (confirm(`${label} 완료! 홈 화면으로 돌아가시겠습니까?`)) {
+          window.location.href = '../index.html';
+        }
+      }, 500);
     } else {
       throw new Error(result.message);
     }
@@ -726,9 +805,7 @@ async function submitToSheet(action) {
   }
 }
 
-// ════════════════════════════════════════════
 // UI 유틸
-// ════════════════════════════════════════════
 function showStatus(msg, type) {
   const el = document.getElementById('statusText');
   el.textContent = msg;
@@ -742,34 +819,25 @@ function showToast(msg, type) {
   setTimeout(() => { el.className = 'toast'; }, 3000);
 }
 
-// ════════════════════════════════════════════
-// PDF 다운로드 (브라우저 인쇄 → PDF 저장)
-// ════════════════════════════════════════════
+// PDF 다운로드
 function downloadPDF() {
   const project = document.getElementById('meta_project').value.trim() || 'PRD';
   const author = document.getElementById('meta_author').value.trim() || '';
-
-  // 제목 임시 변경 (파일명 힌트)
   const origTitle = document.title;
   document.title = `PRD_${project}${author ? '_' + author : ''}`;
-
   window.print();
-
-  // 제목 복원
   setTimeout(() => { document.title = origTitle; }, 1000);
 }
 
-// ════════════════════════════════════════════
-// MD 다운로드
-// ════════════════════════════════════════════
+// MD 다운로드 (동적)
 function downloadMD() {
   const v = id => (document.getElementById(id)?.value || '').trim();
   const checked = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(e => e.value);
+  const cfg = SECTION_CONFIG;
 
   let md = `# PRD 1-Page Summary\n\n`;
-  md += `> Product Requirements Document — AI 업무 효율화 기획\n\n`;
+  md += `> Product Requirements Document\n\n`;
 
-  // 메타 정보
   md += `## 기본 정보\n\n`;
   md += `| 항목 | 내용 |\n|------|------|\n`;
   md += `| 프로젝트명 | ${v('meta_project')} |\n`;
@@ -778,68 +846,68 @@ function downloadMD() {
   md += `| 작성일 | ${v('meta_date')} |\n`;
   md += `| 버전 | ${v('meta_version')} |\n\n`;
 
-  // 1. 제품 개요
-  md += `## 1. 제품 개요 (Product Overview)\n\n`;
+  md += `## 1. 제품 개요\n\n`;
   md += `- **제품 유형:** ${checked('product_type').join(', ') || '-'}\n`;
   md += `- **한 줄 정의:** ${v('oneliner') || '-'}\n\n`;
 
-  // 2. 문제 정의 & 목표
-  md += `## 2. 문제 정의 & 목표 (Problem & Objective)\n\n`;
+  md += `## 2. 문제 정의 & 목표\n\n`;
   md += `### 해결하려는 문제\n${v('problem') || '-'}\n\n`;
   md += `### 목표\n${v('objective') || '-'}\n\n`;
 
-  // 3. 대상 사용자
-  md += `## 3. 대상 사용자 (Target Users)\n\n`;
+  // 대상 사용자 (동적)
+  md += `## 3. 대상 사용자\n\n`;
   md += `| 구분 | 사용자 유형 | 주요 업무 | Pain Point |\n|------|-----------|---------|------------|\n`;
-  md += `| Primary | ${v('user_pri_type')} | ${v('user_pri_task')} | ${v('user_pri_pain')} |\n`;
-  md += `| Secondary | ${v('user_sec_type')} | ${v('user_sec_task')} | ${v('user_sec_pain')} |\n\n`;
-
-  // 4. 핵심 기능 요구사항
-  md += `## 4. 핵심 기능 요구사항 (Key Features — MoSCoW)\n\n`;
-  md += `| ID | 기능명 | 설명 | 우선순위 | AI 활용 |\n|----|-------|------|---------|--------|\n`;
-  for (let i = 1; i <= 4; i++) {
-    const name = v(`f${i}_name`);
-    if (name) md += `| F-0${i} | ${name} | ${v(`f${i}_desc`)} | ${v(`f${i}_priority`)} | ${v(`f${i}_ai`)} |\n`;
+  for (let i = 1; i <= rowCounts.users; i++) {
+    const label = cfg.users.labels[i - 1] || `User ${i}`;
+    const type = v(cfg.users.getId(i, 'type'));
+    if (type) md += `| ${label} | ${type} | ${v(cfg.users.getId(i, 'task'))} | ${v(cfg.users.getId(i, 'pain'))} |\n`;
   }
   md += `\n`;
 
-  // 5. AS-IS / TO-BE
+  // 핵심 기능 (동적)
+  md += `## 4. 핵심 기능 요구사항 (MoSCoW)\n\n`;
+  md += `| ID | 기능명 | 설명 | 우선순위 | AI 활용 |\n|----|-------|------|---------|--------|\n`;
+  for (let i = 1; i <= rowCounts.features; i++) {
+    const name = v(cfg.features.getId(i, 'name'));
+    if (name) md += `| ${cfg.features.getLabel(i)} | ${name} | ${v(cfg.features.getId(i, 'desc'))} | ${v(cfg.features.getId(i, 'priority'))} | ${v(cfg.features.getId(i, 'ai'))} |\n`;
+  }
+  md += `\n`;
+
   md += `## 5. AS-IS / TO-BE 비교\n\n`;
   md += `| 구분 | AS-IS | → | TO-BE |\n|------|-------|---|-------|\n`;
   md += `| 프로세스 | ${v('asis_process')} | → | ${v('tobe_process')} |\n`;
   md += `| 소요시간 | ${v('asis_time')} | → | ${v('tobe_time')} |\n`;
   md += `| 품질 | ${v('asis_quality')} | → | ${v('tobe_quality')} |\n\n`;
 
-  // 6. 성공 지표
+  // KPI (동적)
   md += `## 6. 성공 지표 (KPI)\n\n`;
   md += `| KPI | 현재값 | 목표값 | 측정 방법 |\n|-----|-------|-------|----------|\n`;
-  for (let i = 1; i <= 3; i++) {
-    const name = v(`kpi${i}_name`);
-    if (name) md += `| ${name} | ${v(`kpi${i}_current`)} | ${v(`kpi${i}_target`)} | ${v(`kpi${i}_method`)} |\n`;
+  for (let i = 1; i <= rowCounts.kpis; i++) {
+    const name = v(cfg.kpis.getId(i, 'name'));
+    if (name) md += `| ${name} | ${v(cfg.kpis.getId(i, 'current'))} | ${v(cfg.kpis.getId(i, 'target'))} | ${v(cfg.kpis.getId(i, 'method'))} |\n`;
   }
   md += `\n`;
 
-  // 7. 일정 & 리스크
   md += `## 7. 일정 & 리스크\n\n`;
   md += `### 일정\n\n`;
   md += `| Phase | 기간 | 주요 산출물 |\n|-------|------|----------|\n`;
   md += `| 1. MVP | ${v('phase1_period')} | ${v('phase1_output')} |\n`;
   md += `| 2. 확장 | ${v('phase2_period')} | ${v('phase2_output')} |\n`;
   md += `| 3. 고도화 | ${v('phase3_period')} | ${v('phase3_output')} |\n\n`;
+
+  // 리스크 (동적)
   md += `### 리스크\n\n`;
   md += `| 리스크 | 대응 방안 |\n|--------|----------|\n`;
-  for (let i = 1; i <= 3; i++) {
-    const r = v(`risk${i}`);
-    if (r) md += `| ${r} | ${v(`risk${i}_response`)} |\n`;
+  for (let i = 1; i <= rowCounts.risks; i++) {
+    const r = v(cfg.risks.getId(i, ''));
+    if (r) md += `| ${r} | ${v(cfg.risks.getId(i, 'response'))} |\n`;
   }
   md += `\n`;
 
-  // 8. 활용 기술
-  md += `## 8. 활용 기술 (Tech Stack)\n\n`;
+  md += `## 8. 활용 기술\n\n`;
   const techs = checked('tech');
   md += techs.length ? techs.map(t => `- ${t}`).join('\n') + '\n' : '- (미선택)\n';
 
-  // 파일 다운로드
   const project = v('meta_project') || 'PRD';
   const author = v('meta_author');
   const filename = `PRD_1page_${project}${author ? '_' + author : ''}.md`;
@@ -851,9 +919,7 @@ function downloadMD() {
   URL.revokeObjectURL(a.href);
 }
 
-// ════════════════════════════════════════════
 // 자동 로컬 저장 (30초마다)
-// ════════════════════════════════════════════
 setInterval(() => {
   const author = document.getElementById('meta_author').value.trim();
   if (author) {
@@ -863,8 +929,11 @@ setInterval(() => {
   }
 }, 30000);
 
-// 페이지 로드 시 로컬 데이터 복원
-window.addEventListener('DOMContentLoaded', loadLocal);
+// 페이지 로드
+window.addEventListener('DOMContentLoaded', () => {
+  initDynamicSections();
+  loadLocal();
+});
 
 // 페이지 떠날 때 경고
 window.addEventListener('beforeunload', (e) => {

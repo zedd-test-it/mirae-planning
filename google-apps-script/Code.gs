@@ -92,29 +92,35 @@ function getHeaders(type) {
 }
 
 function getOnepageHeaders() {
-  return [
+  var headers = [
     '타임스탬프', '작성자', '부서', '프로젝트명',
     '제품 유형', '한 줄 정의', '문제 정의', '목표',
-    'Primary 사용자', 'Primary 업무', 'Primary Pain Point',
-    'Secondary 사용자', 'Secondary 업무', 'Secondary Pain Point',
-    'F-01 기능명', 'F-01 설명', 'F-01 우선순위', 'F-01 AI활용',
-    'F-02 기능명', 'F-02 설명', 'F-02 우선순위', 'F-02 AI활용',
-    'F-03 기능명', 'F-03 설명', 'F-03 우선순위', 'F-03 AI활용',
-    'F-04 기능명', 'F-04 설명', 'F-04 우선순위', 'F-04 AI활용',
-    'AS-IS 프로세스', 'TO-BE 프로세스',
-    'AS-IS 소요시간', 'TO-BE 소요시간',
-    'AS-IS 품질', 'TO-BE 품질',
-    'KPI 1', 'KPI 1 현재', 'KPI 1 목표', 'KPI 1 측정',
-    'KPI 2', 'KPI 2 현재', 'KPI 2 목표', 'KPI 2 측정',
-    'KPI 3', 'KPI 3 현재', 'KPI 3 목표', 'KPI 3 측정',
-    'Phase 1 기간', 'Phase 1 산출물',
-    'Phase 2 기간', 'Phase 2 산출물',
-    'Phase 3 기간', 'Phase 3 산출물',
-    '리스크 1', '대응 1',
-    '리스크 2', '대응 2',
-    '리스크 3', '대응 3',
-    '활용 기술', '상태'
   ];
+  // 사용자 (최대 4)
+  var userLabels = ['Primary', 'Secondary', 'User 3', 'User 4'];
+  for (var i = 0; i < 4; i++) {
+    headers.push(userLabels[i] + ' 사용자', userLabels[i] + ' 업무', userLabels[i] + ' Pain Point');
+  }
+  // 기능 (최대 8)
+  for (var i = 1; i <= 8; i++) {
+    var fid = 'F-' + (i < 10 ? '0' + i : i);
+    headers.push(fid + ' 기능명', fid + ' 설명', fid + ' 우선순위', fid + ' AI활용');
+  }
+  headers.push('AS-IS 프로세스', 'TO-BE 프로세스', 'AS-IS 소요시간', 'TO-BE 소요시간', 'AS-IS 품질', 'TO-BE 품질');
+  // KPI (최대 6)
+  for (var i = 1; i <= 6; i++) {
+    headers.push('KPI ' + i, 'KPI ' + i + ' 현재', 'KPI ' + i + ' 목표', 'KPI ' + i + ' 측정');
+  }
+  // Phase (고정 3)
+  for (var i = 1; i <= 3; i++) {
+    headers.push('Phase ' + i + ' 기간', 'Phase ' + i + ' 산출물');
+  }
+  // 리스크 (최대 6)
+  for (var i = 1; i <= 6; i++) {
+    headers.push('리스크 ' + i, '대응 ' + i);
+  }
+  headers.push('활용 기술', '사용자수', '기능수', 'KPI수', '리스크수', '상태');
+  return headers;
 }
 
 function getDetailedHeaders() {
@@ -190,25 +196,35 @@ function buildOnepageRow(data) {
   var row = [
     new Date(), data.meta_author || '', data.meta_dept || '', data.meta_project || '',
     f.product_type || '', f.oneliner || '', f.problem || '', f.objective || '',
-    f.user_pri_type || '', f.user_pri_task || '', f.user_pri_pain || '',
-    f.user_sec_type || '', f.user_sec_task || '', f.user_sec_pain || '',
   ];
-  for (var i = 1; i <= 4; i++) {
+  // 사용자 (최대 4슬롯)
+  var userPrefixes = ['user_pri', 'user_sec', 'user_3', 'user_4'];
+  for (var i = 0; i < 4; i++) {
+    var p = userPrefixes[i];
+    row.push(f[p + '_type'] || '', f[p + '_task'] || '', f[p + '_pain'] || '');
+  }
+  // 기능 (최대 8슬롯)
+  for (var i = 1; i <= 8; i++) {
     row.push(f['f' + i + '_name'] || '', f['f' + i + '_desc'] || '', f['f' + i + '_priority'] || '', f['f' + i + '_ai'] || '');
   }
   ['process', 'time', 'quality'].forEach(function(c) {
     row.push(f['asis_' + c] || '', f['tobe_' + c] || '');
   });
-  for (var i = 1; i <= 3; i++) {
+  // KPI (최대 6슬롯)
+  for (var i = 1; i <= 6; i++) {
     row.push(f['kpi' + i + '_name'] || '', f['kpi' + i + '_current'] || '', f['kpi' + i + '_target'] || '', f['kpi' + i + '_method'] || '');
   }
+  // Phase (고정 3)
   for (var i = 1; i <= 3; i++) {
     row.push(f['phase' + i + '_period'] || '', f['phase' + i + '_output'] || '');
   }
-  for (var i = 1; i <= 3; i++) {
+  // 리스크 (최대 6슬롯)
+  for (var i = 1; i <= 6; i++) {
     row.push(f['risk' + i] || '', f['risk' + i + '_response'] || '');
   }
-  row.push(f.tech_stack || '', data.action || 'submit');
+  row.push(f.tech_stack || '');
+  row.push(f._user_count || '2', f._feature_count || '4', f._kpi_count || '3', f._risk_count || '3');
+  row.push(data.action || 'submit');
   return row;
 }
 

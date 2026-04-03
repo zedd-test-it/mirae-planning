@@ -1420,10 +1420,15 @@ async function aiAutoFill() {
     user_pri_task: f.user_pri_task,
     user_sec_type: f.user_sec_type,
     user_sec_task: f.user_sec_task,
-    df1_name: f.f1_name, df1_desc: f.f1_desc, df1_priority: f.f1_priority,
-    df2_name: f.f2_name, df2_desc: f.f2_desc, df2_priority: f.f2_priority,
-    df3_name: f.f3_name, df3_desc: f.f3_desc, df3_priority: f.f3_priority,
-    df4_name: f.f4_name, df4_desc: f.f4_desc, df4_priority: f.f4_priority,
+  };
+  // 기능 동적 매핑 (1page의 f1~fN → 상세의 df1~df5)
+  const featureCount = Math.min(parseInt(f._feature_count) || 4, 5);
+  for (let i = 1; i <= featureCount; i++) {
+    directMap[`df${i}_name`] = f[`f${i}_name`];
+    directMap[`df${i}_desc`] = f[`f${i}_desc`];
+    directMap[`df${i}_priority`] = f[`f${i}_priority`];
+  }
+  Object.assign(directMap, {
     cmp_time_as: f.asis_time, cmp_time_to: f.tobe_time,
     cmp_acc_as: f.asis_quality, cmp_acc_to: f.tobe_quality,
     kpi1_name: f.kpi1_name, kpi1_current: f.kpi1_current, kpi1_target: f.kpi1_target, kpi1_method: f.kpi1_method,

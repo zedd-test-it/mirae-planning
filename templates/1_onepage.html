@@ -666,25 +666,31 @@ function loadMD(input) {
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    const md = e.target.result;
-    console.log('[MD 불러오기] 파일 크기:', md.length, '자');
-    const result = parseMD(md);
-    if (result.total === 0) {
-      alert('MD 파일에서 인식 가능한 내용을 찾지 못했습니다.\n\n이 페이지에서 "MD 다운로드"로 저장한 파일을 사용해주세요.');
-    } else {
-      const msgs = [];
-      if (result.meta) msgs.push('기본 정보');
-      if (result.users) msgs.push(`사용자 ${result.users}명`);
-      if (result.features) msgs.push(`기능 ${result.features}개`);
-      if (result.asistobe) msgs.push(`AS-IS/TO-BE ${result.asistobe}개`);
-      if (result.kpis) msgs.push(`KPI ${result.kpis}개`);
-      if (result.phases) msgs.push(`일정 ${result.phases}개`);
-      if (result.risks) msgs.push(`리스크 ${result.risks}개`);
-      if (result.tech) msgs.push('활용 기술');
-      alert('MD 불러오기 완료!\n\n' + msgs.join(', ') + ' 반영됨\n\n내용을 확인하고 필요시 수정하세요.');
+    try {
+      const md = e.target.result;
+      console.log('[MD] 파일 크기:', md.length, '자');
+      console.log('[MD] 첫 200자:', md.substring(0, 200));
+      const result = parseMD(md);
+      if (result.total === 0) {
+        alert('MD 파일에서 인식 가능한 내용을 찾지 못했습니다.\n\n이 페이지에서 "MD 다운로드"로 저장한 파일을 사용해주세요.\n\n(브라우저 콘솔에서 상세 로그를 확인할 수 있습니다)');
+      } else {
+        const msgs = [];
+        if (result.meta) msgs.push('기본 정보');
+        if (result.users) msgs.push(`사용자 ${result.users}명`);
+        if (result.features) msgs.push(`기능 ${result.features}개`);
+        if (result.asistobe) msgs.push(`AS-IS/TO-BE ${result.asistobe}개`);
+        if (result.kpis) msgs.push(`KPI ${result.kpis}개`);
+        if (result.phases) msgs.push(`일정 ${result.phases}개`);
+        if (result.risks) msgs.push(`리스크 ${result.risks}개`);
+        if (result.tech) msgs.push('활용 기술');
+        alert('MD 불러오기 완료!\n\n' + msgs.join(', ') + ' 반영됨\n\n내용을 확인하고 필요시 수정하세요.');
+      }
+    } catch (err) {
+      console.error('[MD] 파싱 오류:', err);
+      alert('MD 파싱 중 오류가 발생했습니다.\n\n' + err.message + '\n\n브라우저 콘솔(F12)에서 상세 내용을 확인하세요.');
     }
   };
-  reader.readAsText(file);
+  reader.readAsText(file, 'UTF-8');
 }
 
 function parseMD(md) {
@@ -724,8 +730,10 @@ function parseMD(md) {
     return md.substring(afterStart, ei === -1 ? md.length : ei).trim();
   }
 
-  // 기본 정보 (항목/내용 테이블 또는 프로젝트명 키워드)
+  // 기본 정보
+  console.log('[MD] 파싱 시작...');
   const metaRows = findTable(['항목', '내용']);
+  console.log('[MD] 기본 정보 테이블:', metaRows.length, '행');
   if (metaRows.length > 0) {
     const m = {};
     metaRows.forEach(r => { if (r.length >= 2) m[r[0]] = r[1]; });
@@ -767,8 +775,11 @@ function parseMD(md) {
     if (clean && clean !== '-') document.getElementById('objective').value = clean;
   }
 
-  // 3. 대상 사용자 (구분/유형/업무 등 키워드로 찾기)
-  const userRows = findTable(['구분', '유형']) || findTable(['구분', '사용자']);
+  // 3. 대상 사용자
+  let userRows = findTable(['구분', '유형']);
+  if (!userRows.length) userRows = findTable(['구분', '사용자']);
+  if (!userRows.length) userRows = findTable(['Primary']);
+  console.log('[MD] 사용자:', userRows.length, '행');
   if (userRows.length > 0) {
     rebuild('users', userRows.length, userRows.map(r => ({
       cat: r[0] || '', type: r[1] || '', task: r[2] || '', pain: r[3] || ''
@@ -776,8 +787,11 @@ function parseMD(md) {
     result.users = userRows.length; result.total++;
   }
 
-  // 4. 핵심 기능 (ID/기능명 키워드)
-  const featRows = findTable(['기능명', '설명']) || findTable(['ID', '기능']);
+  // 4. 핵심 기능
+  let featRows = findTable(['기능명', '설명']);
+  if (!featRows.length) featRows = findTable(['ID', '기능']);
+  if (!featRows.length) featRows = findTable(['기능명']);
+  console.log('[MD] 기능:', featRows.length, '행');
   if (featRows.length > 0) {
     // ID 컬럼이 있으면 1번부터, 없으면 0번부터
     const hasId = featRows[0][0] && /^F-?\d/i.test(featRows[0][0]);
@@ -789,7 +803,9 @@ function parseMD(md) {
   }
 
   // 5. AS-IS / TO-BE
-  const atRows = findTable(['AS-IS', 'TO-BE']) || findTable(['AS-IS', 'TO-BE']);
+  let atRows = findTable(['AS-IS', 'TO-BE']);
+  if (!atRows.length) atRows = findTable(['AS-IS']);
+  console.log('[MD] AS-IS/TO-BE:', atRows.length, '행');
   if (atRows.length > 0) {
     rebuild('asistobe', atRows.length, atRows.map(r => {
       // 화살표(→) 컬럼이 있을 수 있으므로 필터링
@@ -800,7 +816,9 @@ function parseMD(md) {
   }
 
   // 6. 성공 지표 / KPI
-  const kpiRows = findTable(['KPI']) || findTable(['성공 지표']);
+  let kpiRows = findTable(['KPI']);
+  if (!kpiRows.length) kpiRows = findTable(['성공 지표']);
+  console.log('[MD] KPI:', kpiRows.length, '행');
   if (kpiRows.length > 0) {
     rebuild('kpis', kpiRows.length, kpiRows.map(r => ({
       name: r[0] || '', current: r[1] || '', target: r[2] || '', method: r[3] || ''
@@ -809,7 +827,10 @@ function parseMD(md) {
   }
 
   // 7. 일정 / Phase
-  const phaseRows = findTable(['Phase', '기간']) || findTable(['일정', '기간']);
+  let phaseRows = findTable(['Phase', '기간']);
+  if (!phaseRows.length) phaseRows = findTable(['Phase']);
+  if (!phaseRows.length) phaseRows = findTable(['일정', '기간']);
+  console.log('[MD] Phase:', phaseRows.length, '행');
   if (phaseRows.length > 0) {
     rebuild('phases', phaseRows.length, phaseRows.map(r => ({
       name: r[0] || '', period: r[1] || '', output: r[2] || ''
@@ -818,7 +839,9 @@ function parseMD(md) {
   }
 
   // 7-2. 리스크
-  const riskRows = findTable(['리스크', '대응']);
+  let riskRows = findTable(['리스크', '대응']);
+  if (!riskRows.length) riskRows = findTable(['리스크']);
+  console.log('[MD] 리스크:', riskRows.length, '행');
   if (riskRows.length > 0) {
     rebuild('risks', riskRows.length, riskRows.map(r => ({
       '': r[0] || '', response: r[1] || ''

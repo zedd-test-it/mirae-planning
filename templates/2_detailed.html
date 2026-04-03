@@ -260,6 +260,25 @@
     resize: vertical;
   }
 
+  .img-upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .img-upload-area:hover { border-color: #888; }
+  .img-upload-area .label { font-size: 11px; color: #999; }
+  .img-upload-area img { max-width: 100%; max-height: 400px; margin-top: 8px; border: 1px solid #eee; }
+  .img-upload-area .remove-img {
+    display: inline-block; margin-top: 6px; font-size: 10px; color: #dc3545; cursor: pointer; text-decoration: underline;
+  }
+
+  .req { color: #dc3545; font-size: 10px; }
+  .section-guide-sm { font-size: 9px; color: #999; margin-bottom: 6px; }
+
   /* 하단 고정 바 */
   .action-bar {
     position: fixed;
@@ -411,6 +430,9 @@
     input::placeholder, textarea::placeholder { color: transparent; }
     td { padding: 3px 6px; }
     .sketch-area { border-color: #ddd; }
+    .img-upload-area { border: none; padding: 0; }
+    .img-upload-area .label, .img-upload-area .remove-img { display: none; }
+    .section-guide-sm { display: none; }
   }
 
   @page { size: A4; margin: 10mm; }
@@ -447,6 +469,7 @@
   <a href="#sec10"><span class="num">10</span>비기능 요구사항</a>
   <a href="#sec11"><span class="num">11</span>일정</a>
   <a href="#sec12"><span class="num">12</span>성공 지표</a>
+  <a href="#sec12_3" style="color:#dc3545;"><span class="num">QA</span>품질관리</a>
   <a href="#sec13"><span class="num">13</span>리스크</a>
 </nav>
 
@@ -770,10 +793,20 @@
     <div class="sketch-area">
       <textarea id="sketch_main" placeholder="예) [상단 GNB: 로고 | 고객 검색 | 알림 | 프로필]&#10;&#10;[좌측 사이드바]          [메인 영역]&#10; - 고객 목록              - 선택 고객 포트폴리오 현황&#10; - 즐겨찾기               - AI 제안서 생성 버튼&#10; - 최근 조회              - 시장 브리핑 카드&#10;&#10;[하단: 상태바 | 자동저장 표시]"></textarea>
     </div>
+    <div class="img-upload-area" onclick="document.getElementById('img_main').click()">
+      <div class="label">메인 화면 이미지/스크린샷 (클릭하여 업로드)</div>
+      <input type="file" id="img_main" accept="image/*" style="display:none;" onchange="previewImg(this, 'preview_main')">
+      <div id="preview_main"></div>
+    </div>
 
     <div class="sub-title">제안서 생성 화면</div>
     <div class="sketch-area">
       <textarea id="sketch_detail" placeholder="예) [Step 1: 고객 선택] → [Step 2: 옵션 설정(투자성향/기간)] → [Step 3: AI 생성 중...] → [Step 4: 결과 미리보기 + 수정] → [Step 5: PDF 다운로드/이메일 발송]"></textarea>
+    </div>
+    <div class="img-upload-area" onclick="document.getElementById('img_detail').click()">
+      <div class="label">상세 화면 이미지/스크린샷 (클릭하여 업로드)</div>
+      <input type="file" id="img_detail" accept="image/*" style="display:none;" onchange="previewImg(this, 'preview_detail')">
+      <div id="preview_detail"></div>
     </div>
   </div>
 
@@ -795,6 +828,12 @@
     <div class="desc">시스템 간 데이터 흐름을 텍스트로 서술합니다.</div>
     <div class="sketch-area">
       <textarea id="sketch_architecture" placeholder="예) [HTS/CRM API] → 고객 데이터 수집 → [Backend] → LLM 분석 요청 → [AI Engine]&#10;       ↓                                        ↓&#10;  [시장 데이터 API]                      [제안서 생성 결과]&#10;       ↓                                        ↓&#10;  뉴스/시세 수집 ────────→ [RAG DB] ←── 제안서 저장 → [Frontend 대시보드]"></textarea>
+    </div>
+
+    <div class="img-upload-area" onclick="document.getElementById('img_arch').click()">
+      <div class="label">시스템 구성도 이미지 (클릭하여 업로드)</div>
+      <input type="file" id="img_arch" accept="image/*" style="display:none;" onchange="previewImg(this, 'preview_arch')">
+      <div id="preview_arch"></div>
     </div>
 
     <div class="sub-title">9-3. 외부 연동</div>
@@ -870,6 +909,38 @@
 
     <div class="sub-title">12-2. 정성 지표</div>
     <textarea id="qualitative" class="tall" placeholder="예) PB 직원 만족도 향상(설문 기반), 상담 품질 균일화 체감, 신규 고객 유치 시 AI 도구 활용 사례 확보, 사내 AI 혁신 선도 사례로 타 부서 확산 기반 마련"></textarea>
+  </div>
+
+  <!-- ═══════════════════════ 12-3. QA / 품질관리 ═══════════════════════ -->
+  <div class="section-wrap" id="sec12_3">
+    <div class="section-header"><span class="num" style="color:#dc3545;">QA</span>품질관리 / 테스트 계획 <span style="font-size:11px;font-weight:400;color:#888;">Quality Assurance</span></div>
+    <div class="section-guide-sm">AI 결과물의 품질을 어떻게 검증할 것인지 구체적으로 정의하세요.</div>
+
+    <div class="sub-title">검증 항목</div>
+    <table>
+      <tr><th>검증 항목</th><th>품질 기준 (수용 기준)</th><th>테스트 방법</th><th>담당</th></tr>
+      <tr>
+        <td><input type="text" id="qa1_item" placeholder="예) AI 제안서 정확도"></td>
+        <td><input type="text" id="qa1_criteria" placeholder="예) 할루시네이션 비율 5% 이하, 적합성 원칙 위반 0건"></td>
+        <td><input type="text" id="qa1_method" placeholder="예) PB 전문가 100건 샘플 검증 (월간)"></td>
+        <td><input type="text" id="qa1_owner" placeholder="예) QA팀 + PB 5명"></td>
+      </tr>
+      <tr>
+        <td><input type="text" id="qa2_item" placeholder="예) 응답 속도"></td>
+        <td><input type="text" id="qa2_criteria" placeholder="예) 제안서 생성 30초 이내, 페이지 로딩 2초 이내"></td>
+        <td><input type="text" id="qa2_method" placeholder="예) 부하 테스트 (100명 동시 접속)"></td>
+        <td><input type="text" id="qa2_owner" placeholder="예) 인프라팀"></td>
+      </tr>
+      <tr>
+        <td><input type="text" id="qa3_item" placeholder="예) 보안 검증"></td>
+        <td><input type="text" id="qa3_criteria" placeholder="예) 고객 데이터 외부 유출 0건, 접근 권한 위반 0건"></td>
+        <td><input type="text" id="qa3_method" placeholder="예) 모의 침투 테스트, 접근 로그 감사"></td>
+        <td><input type="text" id="qa3_owner" placeholder="예) 정보보안팀"></td>
+      </tr>
+    </table>
+
+    <div class="sub-title">UAT (사용자 수용 테스트) 계획</div>
+    <textarea id="uat_plan" class="tall" placeholder="예) Phase 1 완료 후 PB 5명 대상 2주간 파일럿 운영. 일 평균 3건 이상 제안서 생성, 만족도 4.0/5.0 이상 달성 시 Phase 2 진행. 주간 피드백 세션 운영."></textarea>
   </div>
 
   <!-- ═══════════════════════ 13. 리스크 ═══════════════════════ -->
@@ -1506,10 +1577,44 @@ async function aiAutoFill() {
   }
 }
 
+// 이미지 미리보기
+function previewImg(input, previewId) {
+  const preview = document.getElementById(previewId);
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    preview.innerHTML = `<img src="${e.target.result}" alt="업로드 이미지"><br><span class="remove-img" onclick="removeImg('${input.id}', '${previewId}')">이미지 제거</span>`;
+    // base64를 localStorage에 저장
+    const key = 'img_' + input.id;
+    try { localStorage.setItem(key, e.target.result); } catch(err) { console.warn('이미지 저장 실패 (용량 초과 가능):', err); }
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImg(inputId, previewId) {
+  document.getElementById(previewId).innerHTML = '';
+  document.getElementById(inputId).value = '';
+  localStorage.removeItem('img_' + inputId);
+  event.stopPropagation();
+}
+
+function restoreImages() {
+  ['img_main', 'img_detail', 'img_arch'].forEach(id => {
+    const data = localStorage.getItem('img_' + id);
+    if (data) {
+      const previewId = 'preview_' + id.replace('img_', '');
+      document.getElementById(previewId).innerHTML = `<img src="${data}" alt="업로드 이미지"><br><span class="remove-img" onclick="removeImg('${id}', '${previewId}')">이미지 제거</span>`;
+    }
+  });
+}
+
 // 페이지 로드 시 로컬 데이터 복원 + 1page 데이터 확인
 window.addEventListener('DOMContentLoaded', () => {
   loadLocal();
   checkOnepageData();
+  restoreImages();
 });
 
 // 페이지 떠날 때 경고
